@@ -5,10 +5,10 @@ class SocialSignInButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const SocialSignInButton({
-    Key? key,
+    super.key,
     required this.image,
     required this.onPressed,
-  }) : super(key: key);
+  }) ;
 
   @override
   Widget build(BuildContext context) {

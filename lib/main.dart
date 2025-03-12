@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/themes/app_theme.dart';
-import 'package:frontend/user/auth/views/sign_in_screen.dart';
+
 import 'package:frontend/user/home/home.dart';
 
 
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: AppTheme.darkTheme,
+      theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       home: MainScreen()
     );

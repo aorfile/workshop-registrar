@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/user/home/widgets/navigation_item.dart';
-
 
 class ResponsiveNavigation extends StatelessWidget {
   final int currentIndex;
@@ -14,79 +12,87 @@ class ResponsiveNavigation extends StatelessWidget {
     required this.body,
   });
 
-  static final List<NavigationItem> navigationItems = [
-    NavigationItem(
-      label: 'Home',
-      icon: Icons.home_outlined,
-      selectedIcon: Icons.home,
-    ),
-    NavigationItem(
-      label: 'Workshops',
-      icon: Icons.calendar_today_outlined,
-      selectedIcon: Icons.calendar_today,
-    ),
-    NavigationItem(
-      label: 'Profile',
-      icon: Icons.person_outline,
-      selectedIcon: Icons.person,
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth < 600) {
-          return _buildMobileLayout(context);
-        } else {
-          return _buildDesktopLayout(context, constraints);
-        }
-      },
+     Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      body: size.width <= 800 ?
+            _buildMobileLayout():
+          
+          _buildDesktopLayout(size.width >= 800),
+        
+      
     );
   }
 
-  Widget _buildMobileLayout(BuildContext context) {
+  Widget _buildMobileLayout() {
     return Scaffold(
-      body: body,
+      body: SafeArea(
+        child: body,
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentIndex,
         onDestinationSelected: onDestinationSelected,
-        destinations: navigationItems
-            .map((item) => NavigationDestination(
-                  icon: Icon(item.icon),
-                  selectedIcon: Icon(item.selectedIcon),
-                  label: item.label,
-                ))
-            .toList(),
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.calendar_today_outlined),
+            selectedIcon: Icon(Icons.calendar_today),
+            label: 'Workshops',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildDesktopLayout(BuildContext context, BoxConstraints constraints) {
+  Widget _buildDesktopLayout(bool extended) {
     return Scaffold(
-      body: Row(
-        children: [
-          NavigationRail(
-            extended: constraints.maxWidth >= 800,
-            destinations: navigationItems
-                .map((item) => NavigationRailDestination(
-                      icon: Icon(item.icon),
-                      selectedIcon: Icon(item.selectedIcon),
-                      label: Text(item.label),
-                    ))
-                .toList(),
-            selectedIndex: currentIndex,
-            onDestinationSelected: onDestinationSelected,
-            leading: const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: CircleAvatar(
-                child: Icon(Icons.person),
+      body: SafeArea(
+        child: Row(
+          children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: extended ? 200 : 80,
+                minHeight: double.infinity,
+              ),
+              child: NavigationRail(
+                extended: extended,
+                destinations: const [
+                  NavigationRailDestination(
+                    icon: Icon(Icons.home_outlined),
+                    selectedIcon: Icon(Icons.home),
+                    label: Text('Home'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.calendar_today_outlined),
+                    selectedIcon: Icon(Icons.calendar_today),
+                    label: Text('Workshops'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.person_outline),
+                    selectedIcon: Icon(Icons.person),
+                    label: Text('Profile'),
+                  ),
+                ],
+                selectedIndex: currentIndex,
+                onDestinationSelected: onDestinationSelected,
               ),
             ),
-          ),
-          const VerticalDivider(thickness: 1, width: 1),
-          Expanded(child: body),
-        ],
+            const VerticalDivider(thickness: 1, width: 1),
+            Expanded(
+              child: body,
+            ),
+          ],
+        ),
       ),
     );
   }

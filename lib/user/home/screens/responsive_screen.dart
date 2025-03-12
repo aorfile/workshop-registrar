@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:frontend/user/home/widgets/custom_nav_rail.dart';
+import 'package:frontend/user/home/widgets/nav_item.dart';
 
 class ResponsiveNavigation extends StatelessWidget {
   final int currentIndex;
@@ -14,14 +17,11 @@ class ResponsiveNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: size.width <= 800 ?
-            _buildMobileLayout():
-          
-          _buildDesktopLayout(size.width >= 800),
-        
-      
+      body: size.width <= 800
+          ? _buildMobileLayout()
+          : _buildDesktopLayout(size.width >= 800),
     );
   }
 
@@ -30,23 +30,23 @@ class ResponsiveNavigation extends StatelessWidget {
       body: SafeArea(
         child: body,
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: currentIndex,
-        onDestinationSelected: onDestinationSelected,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
+        onTap: onDestinationSelected,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.house),
+            activeIcon: Icon(FontAwesomeIcons.houseChimney),
             label: 'Home',
           ),
-          NavigationDestination(
-            icon: Icon(Icons.calendar_today_outlined),
-            selectedIcon: Icon(Icons.calendar_today),
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.calendar),
+            activeIcon: Icon(FontAwesomeIcons.solidCalendar),
             label: 'Workshops',
           ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person),
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.user),
+            activeIcon: Icon(FontAwesomeIcons.solidUser),
             label: 'Profile',
           ),
         ],
@@ -59,35 +59,57 @@ class ResponsiveNavigation extends StatelessWidget {
       body: SafeArea(
         child: Row(
           children: [
-            ConstrainedBox(
+            Container(
               constraints: BoxConstraints(
                 maxWidth: extended ? 200 : 80,
                 minHeight: double.infinity,
               ),
-              child: NavigationRail(
-                extended: extended,
-                destinations: const [
-                  NavigationRailDestination(
-                    icon: Icon(Icons.home_outlined),
-                    selectedIcon: Icon(Icons.home),
-                    label: Text('Home'),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 12,
+                    offset: const Offset(4, 0),
                   ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.calendar_today_outlined),
-                    selectedIcon: Icon(Icons.calendar_today),
-                    label: Text('Workshops'),
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 3,
+                    offset: const Offset(2, 0),
                   ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.person_outline),
-                    selectedIcon: Icon(Icons.person),
-                    label: Text('Profile'),
+                ],
+              ),
+              child: CustomResponsiveNavRail(
+                items: [
+                  NavItem(
+                    icon: FontAwesomeIcons.house,
+                    selectedIcon: FontAwesomeIcons.houseChimney,
+                    label: 'Home',
+                    isExpanded: extended,
+                    isSelected: currentIndex == 0,
+                    onTap: () => onDestinationSelected(0),
+                  ),
+                  NavItem(
+                    icon: FontAwesomeIcons.calendar,
+                    selectedIcon: FontAwesomeIcons.solidCalendar,
+                    label: 'Workshops',
+                    isExpanded: extended,
+                    isSelected: currentIndex == 1,
+                    onTap: () => onDestinationSelected(1),
+                  ),
+                  NavItem(
+                    icon: FontAwesomeIcons.user,
+                    selectedIcon: FontAwesomeIcons.solidUser,
+                    label: 'Profile',
+                    isExpanded: extended,
+                    isSelected: currentIndex == 2,
+                    onTap: () => onDestinationSelected(2),
                   ),
                 ],
                 selectedIndex: currentIndex,
-                onDestinationSelected: onDestinationSelected,
+                onIndexChanged: onDestinationSelected,
               ),
             ),
-            const VerticalDivider(thickness: 1, width: 1),
             Expanded(
               child: body,
             ),

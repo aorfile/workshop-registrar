@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 @JsonSerializable()
 class AuthResponse {
   final User user;
-  final String token;
+  final String? token;
 
   AuthResponse({required this.user, required this.token});
 

@@ -15,10 +15,10 @@ class UserRepository {
     }
   }
 
-  Future<User> loginUser(User user) async {
+  Future<AuthResponse> loginUser(User user) async {
     try {
       final response = await _dio.post('/login', data: user);
-      return User.fromJson(response.data);
+      return AuthResponse.fromJson(response.data);
     } on DioException catch (e) {
       throw _handleDioError(e);
     }

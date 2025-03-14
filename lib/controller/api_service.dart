@@ -12,45 +12,45 @@ class ApiService {
   ApiService._internal() {
     dio = Dio(
       BaseOptions(
-        baseUrl: 'localhost:3000',
-        connectTimeout: const Duration(seconds: 5),
-        receiveTimeout: const Duration(seconds: 3),
+        baseUrl: 'http://localhost:3000/api',
+        // connectTimeout: const Duration(seconds: 5),
+        //receiveTimeout: const Duration(seconds: 3),
         headers: {'Content-Type': 'application/json'},
       ),
     );
 
     // Add interceptors
-    dio.interceptors.addAll([
-      PrettyDioLogger(
-        requestHeader: true,
-        requestBody: true,
-        responseBody: true,
-        responseHeader: false,
-        compact: false,
-      ),
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          // Add auth token if available
-          final token = 'YOUR_AUTH_TOKEN';
-          if (token != null) {
-            options.headers['Authorization'] = 'Bearer $token';
-          }
-          return handler.next(options);
-        },
-        onError: (DioException e, handler) {
-          // Handle common errors
-          if (e.type == DioExceptionType.connectionTimeout) {
-            return handler.reject(
-              DioException(
-                requestOptions: e.requestOptions,
-                error:
-                    'Connection timeout. Please check your internet connection.',
-              ),
-            );
-          }
-          return handler.next(e);
-        },
-      ),
-    ]);
+    //   dio.interceptors.addAll([
+    //     PrettyDioLogger(
+    //       requestHeader: true,
+    //       requestBody: true,
+    //       responseBody: true,
+    //       responseHeader: false,
+    //       compact: false,
+    //     ),
+    //     InterceptorsWrapper(
+    //       onRequest: (options, handler) {
+    //         // Add auth token if available
+    //         final token = 'YOUR_AUTH_TOKEN';
+    //         if (token != null) {
+    //           options.headers['Authorization'] = 'Bearer $token';
+    //         }
+    //         return handler.next(options);
+    //       },
+    //       onError: (DioException e, handler) {
+    //         // Handle common errors
+    //         if (e.type == DioExceptionType.connectionTimeout) {
+    //           return handler.reject(
+    //             DioException(
+    //               requestOptions: e.requestOptions,
+    //               error:
+    //                   'Connection timeout. Please check your internet connection.',
+    //             ),
+    //           );
+    //         }
+    //         return handler.next(e);
+    //       },
+    //     ),
+    //   ]);
   }
 }

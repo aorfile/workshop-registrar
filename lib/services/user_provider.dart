@@ -7,7 +7,7 @@ import '../controller/user_repo.dart';
 enum AuthStatus { initial, authenticated, unauthenticated, authenticating }
 
 class UserProvider extends ChangeNotifier {
-  final UserRepository _userRepository;
+  final _userRepository = UserRepository();
   late SharedPreferences _prefs;
 
   User? _currentUser;
@@ -22,8 +22,6 @@ class UserProvider extends ChangeNotifier {
 
   // Cache timeout duration
   static const cacheDuration = Duration(hours: 24);
-
-  UserProvider(this._userRepository);
 
   // Getters
   User? get currentUser => _currentUser;
@@ -117,6 +115,47 @@ class UserProvider extends ChangeNotifier {
       _setLoading(true);
 
       final response = await _userRepository.loginUser(user);
+
+      // Fix: Check for null response
+      if (response == null) {
+        throw Exception('Invalid login response');
+      }
+
+      // Fix: Check for null token
+      if (response.token == null) {
+        throw Exception('No token received');
+      }
+
+      // Save token
+      await _prefs.setString(_tokenKey, response.token!);
+
+      // Update user data
+      final userData = response.toJson();
+      if (userData != null) {
+        await _saveUserData(User.fromJson(userData));
+      } else {
+        await loadCurrentUser(forceRefresh: true);
+      }
+
+      _authStatus = AuthStatus.authenticated;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _handleError('Login failed', e);
+      _authStatus = AuthStatus.unauthenticated;
+      notifyListeners();
+      return false;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<bool> registerUser(User user) async {
+    try {
+      _authStatus = AuthStatus.authenticating;
+      _setLoading(true);
+
+      final response = await _userRepository.registerUser(user);
 
       // Fix: Check for null response
       if (response == null) {

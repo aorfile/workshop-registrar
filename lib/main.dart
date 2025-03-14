@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/services/user_provider.dart';
 import 'package:frontend/themes/app_theme.dart';
 import 'package:frontend/themes/theme_provider.dart';
 import 'package:frontend/user/auth/views/form.dart';
@@ -17,7 +18,10 @@ void main() async {
 
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => themeNotifier)],
+      providers: [
+        ChangeNotifierProvider(create: (_) => themeNotifier),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+      ],
       child: const MyApp(),
     ),
   );

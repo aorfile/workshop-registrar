@@ -2,8 +2,11 @@
 // Current User's Login: aorfile
 
 import 'package:flutter/material.dart';
+import 'package:frontend/models/user_model.dart';
+import 'package:frontend/services/user_provider.dart';
 import 'package:frontend/user/auth/components/divider.dart';
 import 'package:frontend/user/auth/components/social_sign_in.dart';
+import 'package:provider/provider.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -26,6 +29,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  //provider
 
   @override
   void dispose() {
@@ -51,17 +55,12 @@ class _SignUpPageState extends State<SignUpPage> {
       setState(() => _isLoading = true);
 
       try {
-        // TODO: Implement sign up logic
-        final credentials = {
-          'name': _nameController.text,
-          'email': _emailController.text,
-          'password': _passwordController.text,
-          'phone': _phoneController.text,
-        };
-
-        print('Signing up with credentials: $credentials');
-        await Future.delayed(const Duration(seconds: 2)); // Simulate API call
-
+        final User user = User(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+        userProvider.registerUser(user);
         if (mounted) {
           // Navigate to verification or home screen
           // Navigator.pushReplacement(...);
@@ -144,23 +143,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                         const SizedBox(height: 40),
                         // Name Field
-                        TextFormField(
-                          controller: _nameController,
-                          decoration: InputDecoration(
-                            labelText: 'Full Name',
-                            prefixIcon: const Icon(Icons.person_outline),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value?.isEmpty ?? true) {
-                              return 'Please enter your name';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16),
+
                         // Email Field
                         TextFormField(
                           controller: _emailController,
@@ -184,25 +167,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 16),
-                        // Phone Field
-                        TextFormField(
-                          controller: _phoneController,
-                          keyboardType: TextInputType.phone,
-                          decoration: InputDecoration(
-                            labelText: 'Phone Number',
-                            prefixIcon: const Icon(Icons.phone_outlined),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value?.isEmpty ?? true) {
-                              return 'Please enter your phone number';
-                            }
-                            return null;
-                          },
-                        ),
+
                         const SizedBox(height: 16),
                         // Password Field
                         TextFormField(
@@ -285,16 +250,29 @@ class _SignUpPageState extends State<SignUpPage> {
                                 TextSpan(
                                   text: 'I accept the ',
                                   children: [
-                                    TextSpan(
-                                      text: 'Terms and Conditions',
-                                      style: TextStyle(
-                                        color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
+                                    WidgetSpan(
+                                      child: MouseRegion(
+                                        cursor:
+                                            SystemMouseCursors
+                                                .click, // Change cursor only on hover
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            // TODO: Open terms and conditions dialog
+                                          },
+                                          child: Text(
+                                            'Terms and Conditions',
+                                            style: TextStyle(
+                                              color:
+                                                  Theme.of(
+                                                    context,
+                                                  ).colorScheme.primary,
+                                              fontWeight:
+                                                  FontWeight
+                                                      .bold, // Make it bold
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                      // TODO: Add terms and conditions dialog
-                                      // onTap: () => showDialog(...),
                                     ),
                                   ],
                                 ),
@@ -308,7 +286,9 @@ class _SignUpPageState extends State<SignUpPage> {
                           width: double.infinity,
                           height: 50,
                           child: ElevatedButton(
-                            onPressed: _isLoading ? null : _handleSignUp,
+                            onPressed: () {
+                              _isLoading ? null : _handleSignUp();
+                            },
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),

@@ -3,32 +3,34 @@ import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
 class User {
-  final String userId;
-  final String fullName;
-  final String email;
+  final String? userId;
+  final String? fullName;
+  final String? email;
   final String? phone;
   final String? studentId;
   final String? googleId;
-  final String role;
+  final String? role;
   final String? profilePictureUrl;
+  final String? password;
   final String? department;
   final bool? emailVerified;
   final bool? phoneVerified;
-  final String? token;
+
   final Map<String, dynamic>? preferences;
-  final String status;
+  final String? status;
 
   User({
-    required this.userId,
-    required this.fullName,
-    required this.email,
+    this.userId,
+    this.fullName,
+    this.email,
     this.phone,
     this.googleId,
     this.profilePictureUrl,
     this.studentId,
-    required this.role,
+    this.role,
+    this.password,
     this.department,
-    this.token,
+
     this.emailVerified = false,
     this.phoneVerified = false,
     this.preferences = const {},
@@ -40,7 +42,8 @@ class User {
     fullName: json['full_name'],
     email: json['email'],
     phone: json['phone'],
-    token: json['token'],
+
+    password: json['password'],
     role: json['role'],
     googleId: json['google_id'],
     profilePictureUrl: json['profile_picture_url'],
@@ -65,5 +68,6 @@ class User {
     'status': status,
     'profile_picture_url': profilePictureUrl,
     'student_id': studentId,
+    'password': password,
   };
 }

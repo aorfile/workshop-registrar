@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/user/home/screens/homescreen.dart';
+import 'package:frontend/user/home/screens/my_workshop_.dart';
 import 'package:frontend/user/home/screens/profile_screen.dart';
 import 'package:frontend/user/home/screens/responsive_screen.dart';
 import 'package:frontend/user/home/screens/workshop_screen.dart';
@@ -16,7 +16,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-    const WorkshopsScreen(),
+    const MyWorkshopsScreen(),
     const ProfileScreen(),
   ];
 

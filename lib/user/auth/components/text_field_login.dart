@@ -3,8 +3,18 @@ import 'package:flutter/material.dart';
 class FormTextField extends StatelessWidget {
   final String label;
   final IconData icon;
+  final TextEditingController controller;
+  final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
 
-  const FormTextField({super.key, required this.label, required this.icon});
+  const FormTextField({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.controller,
+    this.validator,
+    this.keyboardType,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +24,9 @@ class FormTextField extends StatelessWidget {
         prefixIcon: Icon(icon),
         border: OutlineInputBorder(),
       ),
+      controller: controller,
+      keyboardType: keyboardType,
+      validator: validator,
     );
   }
 }

@@ -1,3 +1,6 @@
+// Current Date and Time (UTC): 2025-03-14 14:32:53
+// Current User's Login: aorfile
+
 import 'package:flutter/material.dart';
 import 'package:frontend/user/auth/components/divider.dart';
 import 'package:frontend/user/auth/components/social_sign_in.dart';
@@ -12,8 +15,55 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
   bool _isObscure = true;
-  final String currentDateTime = '2025-03-12 13:15:31';
-  final String currentUser = 'aorfile';
+  bool _isLoading = false;
+  bool _rememberMe = false;
+
+  // Controllers
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleSignIn() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      setState(() => _isLoading = true);
+
+      try {
+        // TODO: Implement sign in logic
+        final credentials = {
+          'name': _nameController.text,
+          'email': _emailController.text,
+          'password': _passwordController.text,
+          'remember_me': _rememberMe,
+        };
+
+        print('Signing in with credentials: $credentials');
+        await Future.delayed(const Duration(seconds: 2)); // Simulate API call
+
+        if (mounted) {
+          // Navigate to home screen
+          // Navigator.pushReplacement(...)
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Sign in failed: ${e.toString()}')),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +71,6 @@ class _SignInPageState extends State<SignInPage> {
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            // Check if screen is large enough for centered layout
             bool isLargeScreen = constraints.maxWidth > 800;
 
             return Center(
@@ -35,18 +84,23 @@ class _SignInPageState extends State<SignInPage> {
                   margin: EdgeInsets.symmetric(
                     horizontal: isLargeScreen ? 40 : 0,
                   ),
-                  decoration: isLargeScreen ? BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey[100]!,
-                        spreadRadius: 5,
-                        blurRadius: 10,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ) : null,
+                  decoration:
+                      isLargeScreen
+                          ? BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Theme.of(
+                                  context,
+                                ).shadowColor.withOpacity(0.1),
+                                spreadRadius: 5,
+                                blurRadius: 10,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          )
+                          : null,
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -55,10 +109,7 @@ class _SignInPageState extends State<SignInPage> {
                       children: [
                         const SizedBox(height: 40),
                         // Logo
-                        Image.asset(
-                          'assets/images/logo.webp',
-                          height: 80,
-                        ),
+                        Image.asset('assets/images/logo.webp', height: 80),
                         const SizedBox(height: 24),
                         // Welcome Message
                         const Text(
@@ -71,32 +122,44 @@ class _SignInPageState extends State<SignInPage> {
                         const SizedBox(height: 8),
                         // Current Date Time
                         Text(
-                          'UTC: $currentDateTime',
+                          'UTC: 2025-03-14 14:32:53',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey[600],
+                            color: Theme.of(context).colorScheme.outline,
                           ),
                         ),
                         const SizedBox(height: 40),
                         // Name Field (Optional)
                         TextFormField(
-                          decoration: const InputDecoration(
+                          controller: _nameController,
+                          decoration: InputDecoration(
                             labelText: 'Name (Optional)',
-                            prefixIcon: Icon(Icons.person_outline),
-                            border: OutlineInputBorder(),
+                            prefixIcon: const Icon(Icons.person_outline),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
                         // Email Field
                         TextFormField(
-                          decoration: const InputDecoration(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: InputDecoration(
                             labelText: 'Email',
-                            prefixIcon: Icon(Icons.email_outlined),
-                            border: OutlineInputBorder(),
+                            prefixIcon: const Icon(Icons.email_outlined),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                           validator: (value) {
                             if (value?.isEmpty ?? true) {
                               return 'Please enter your email';
+                            }
+                            if (!RegExp(
+                              r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                            ).hasMatch(value!)) {
+                              return 'Please enter a valid email';
                             }
                             return null;
                           },
@@ -107,22 +170,24 @@ class _SignInPageState extends State<SignInPage> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             TextFormField(
+                              controller: _passwordController,
                               obscureText: _isObscure,
                               decoration: InputDecoration(
                                 labelText: 'Password',
                                 prefixIcon: const Icon(Icons.lock_outline),
-                                border: const OutlineInputBorder(),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     _isObscure
                                         ? Icons.visibility_off
                                         : Icons.visibility,
                                   ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _isObscure = !_isObscure;
-                                    });
-                                  },
+                                  onPressed:
+                                      () => setState(
+                                        () => _isObscure = !_isObscure,
+                                      ),
                                 ),
                               ),
                               validator: (value) {
@@ -132,11 +197,24 @@ class _SignInPageState extends State<SignInPage> {
                                 return null;
                               },
                             ),
-                            TextButton(
-                              onPressed: () {
-                                // Handle forgot password
-                              },
-                              child: const Text('Forgot Password?'),
+                            Row(
+                              children: [
+                                Checkbox(
+                                  value: _rememberMe,
+                                  onChanged:
+                                      (value) => setState(
+                                        () => _rememberMe = value ?? false,
+                                      ),
+                                ),
+                                const Text('Remember me'),
+                                const Spacer(),
+                                TextButton(
+                                  onPressed: () {
+                                    // Navigate to password reset
+                                  },
+                                  child: const Text('Forgot Password?'),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -146,20 +224,29 @@ class _SignInPageState extends State<SignInPage> {
                           width: double.infinity,
                           height: 50,
                           child: ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState?.validate() ?? false) {
-                                // Handle sign in
-                              }
-                            },
+                            onPressed: _isLoading ? null : _handleSignIn,
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: const Text(
-                              'Sign In',
-                              style: TextStyle(fontSize: 16),
-                            ),
+                            child:
+                                _isLoading
+                                    ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                              Colors.white,
+                                            ),
+                                      ),
+                                    )
+                                    : const Text(
+                                      'Sign In',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
                           ),
                         ),
                         const SizedBox(height: 24),
@@ -172,7 +259,7 @@ class _SignInPageState extends State<SignInPage> {
                           children: [
                             SocialSignInButton(
                               image: 'assets/images/google.png',
-                              onPressed: () {
+                              onPressed: () async {
                                 // Handle Google sign in
                               },
                             ),
@@ -193,7 +280,7 @@ class _SignInPageState extends State<SignInPage> {
                             const Text("Don't have an account?"),
                             TextButton(
                               onPressed: () {
-                                // Handle navigation to sign up
+                                // Navigate to sign up
                               },
                               child: const Text('Sign Up'),
                             ),

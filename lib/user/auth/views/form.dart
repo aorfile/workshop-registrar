@@ -1,6 +1,8 @@
+// Current Date and Time (UTC): 2025-03-14 14:24:53
+// Current User's Login: aorfile
+
 import 'package:flutter/material.dart';
 import 'package:frontend/user/auth/components/auth_responsive.dart';
-
 import 'package:frontend/user/auth/components/text_field_login.dart';
 
 class FormPage extends StatefulWidget {
@@ -13,8 +15,51 @@ class FormPage extends StatefulWidget {
 class _FormPageState extends State<FormPage> {
   final _formKey = GlobalKey<FormState>();
   bool _isObscure = true;
-  final String currentDateTime = '2025-03-12 13:15:31';
-  final String currentUser = 'aorfile';
+
+  // Text Controllers
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _departmentController = TextEditingController();
+  String? _selectedRole;
+
+  @override
+  void dispose() {
+    // Clean up controllers
+    _nameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _departmentController.dispose();
+    super.dispose();
+  }
+
+  // Form validation
+  bool _validateForm() {
+    if (!(_formKey.currentState?.validate() ?? false)) return false;
+    if (_selectedRole == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please select a role')));
+      return false;
+    }
+    return true;
+  }
+
+  // Handle form submission
+  void _handleSubmit() {
+    if (_validateForm()) {
+      final formData = {
+        'name': _nameController.text,
+        'email': _emailController.text,
+        'phone': _phoneController.text,
+        'department': _departmentController.text,
+        'role': _selectedRole,
+      };
+
+      // TODO: Handle form submission
+      print('Form Data: $formData');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,19 +83,67 @@ class _FormPageState extends State<FormPage> {
 
             const SizedBox(height: 40),
             // Name Field
-            FormTextField(label: 'Full name', icon: Icons.person_outline),
+            FormTextField(
+              label: 'Full name',
+              icon: Icons.person_outline,
+              controller: _nameController,
+              validator: (value) {
+                if (value?.isEmpty ?? true) {
+                  return 'Please enter your full name';
+                }
+                return null;
+              },
+            ),
             const SizedBox(height: 16),
             // Email Field
-            FormTextField(label: 'Email', icon: Icons.email_outlined),
+            FormTextField(
+              label: 'Email',
+              icon: Icons.email_outlined,
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              validator: (value) {
+                if (value?.isEmpty ?? true) {
+                  return 'Please enter your email';
+                }
+                if (!RegExp(
+                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                ).hasMatch(value!)) {
+                  return 'Please enter a valid email';
+                }
+                return null;
+              },
+            ),
             const SizedBox(height: 16),
             // Phone Field
-            FormTextField(label: 'Phone number', icon: Icons.phone_outlined),
+            FormTextField(
+              label: 'Phone number',
+              icon: Icons.phone_outlined,
+              controller: _phoneController,
+              keyboardType: TextInputType.phone,
+              validator: (value) {
+                if (value?.isEmpty ?? true) {
+                  return 'Please enter your phone number';
+                }
+                return null;
+              },
+            ),
             const SizedBox(height: 16),
             // Department Field
-            FormTextField(label: 'Department', icon: Icons.work_outline),
+            FormTextField(
+              label: 'Department',
+              icon: Icons.work_outline,
+              controller: _departmentController,
+              validator: (value) {
+                if (value?.isEmpty ?? true) {
+                  return 'Please enter your department';
+                }
+                return null;
+              },
+            ),
             const SizedBox(height: 16),
             // Role Dropdown
             DropdownButtonFormField<String>(
+              value: _selectedRole,
               decoration: InputDecoration(
                 labelText: 'Role',
                 border: OutlineInputBorder(
@@ -64,19 +157,25 @@ class _FormPageState extends State<FormPage> {
                       child: Text(value),
                     );
                   }).toList(),
-              onChanged: (newValue) {},
+              onChanged: (newValue) {
+                setState(() {
+                  _selectedRole = newValue;
+                });
+              },
+              validator: (value) {
+                if (value == null) {
+                  return 'Please select a role';
+                }
+                return null;
+              },
             ),
             const SizedBox(height: 24),
-            // Sign In Button
+            // Register Button
             SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    // Handle sign in
-                  }
-                },
+                onPressed: _handleSubmit,
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -86,8 +185,6 @@ class _FormPageState extends State<FormPage> {
               ),
             ),
             const SizedBox(height: 24),
-
-            // Or Separator
           ],
         ),
       ),

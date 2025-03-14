@@ -6,6 +6,7 @@ import 'package:frontend/user/auth/views/password_reset_screen.dart';
 import 'package:frontend/user/auth/views/phone_login_screen.dart';
 import 'package:frontend/user/auth/views/phone_verification_screen.dart';
 import 'package:frontend/user/auth/views/sign_in_screen.dart';
+import 'package:frontend/user/auth/views/sign_up_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/user/home/home.dart';
 
@@ -16,7 +17,7 @@ void main() async {
 
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider.value(value: themeNotifier)],
+      providers: [ChangeNotifierProvider(create: (_) => themeNotifier)],
       child: const MyApp(),
     ),
   );
@@ -35,7 +36,8 @@ class MyApp extends StatelessWidget {
           title: 'Flutter Demo',
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
-          home: PhoneVerificationScreen(),
+          themeMode: themeProvider.themeMode,
+          home: SignUpPage(),
         );
       },
     );

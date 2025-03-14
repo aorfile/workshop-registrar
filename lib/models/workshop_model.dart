@@ -1,4 +1,3 @@
-// lib/models/workshop_model.dart
 import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
@@ -21,7 +20,17 @@ class Workshop {
   final String createdBy;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final int? spotsLeft;
+
+  // Computed properties
+  Duration get duration => endTime.difference(workshopDate);
+  String get durationFormatted {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes % 60;
+    return '${hours}h ${minutes}m';
+  }
+
+  int get spotsLeft => capacity - currentRegistrations;
+  bool get isUpcoming => workshopDate.isAfter(DateTime.now());
 
   Workshop({
     required this.workshopId,
@@ -42,7 +51,6 @@ class Workshop {
     required this.createdBy,
     required this.createdAt,
     required this.updatedAt,
-    this.spotsLeft,
   });
 
   factory Workshop.fromJson(Map<String, dynamic> json) => Workshop(
@@ -55,16 +63,15 @@ class Workshop {
     locationType: json['location_type'],
     meetingLink: json['meeting_link'],
     capacity: json['capacity'],
-    currentRegistrations: json['current_registrations'],
+    currentRegistrations: json['current_registrations'] ?? 0,
     minParticipants: json['min_participants'],
-    status: json['status'],
+    status: json['status'] ?? 'scheduled',
     category: json['category'],
     prerequisites: json['prerequisites'],
     materialsUrl: json['materials_url'],
     createdBy: json['created_by'],
     createdAt: DateTime.parse(json['created_at']),
     updatedAt: DateTime.parse(json['updated_at']),
-    spotsLeft: json['spots_left'],
   );
 
   Map<String, dynamic> toJson() => {
@@ -86,6 +93,5 @@ class Workshop {
     'created_by': createdBy,
     'created_at': createdAt.toIso8601String(),
     'updated_at': updatedAt.toIso8601String(),
-    'spots_left': spotsLeft,
   };
 }

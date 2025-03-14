@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class WorkshopsScreen extends StatelessWidget {
+  const WorkshopsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       appBar: _buildAppBar(theme),
       body: _buildBody(theme),
@@ -14,10 +14,7 @@ class HomeScreen extends StatelessWidget {
         onPressed: () {},
         backgroundColor: theme.colorScheme.primary,
         icon: const Icon(Icons.add),
-        label: Text(
-          'New Workshop',
-          style: theme.textTheme.labelLarge,
-        ),
+        label: Text('New Workshop', style: theme.textTheme.labelLarge),
       ),
     );
   }
@@ -30,10 +27,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           CircleAvatar(
             backgroundColor: theme.colorScheme.primary,
-            child: Text(
-              'A',
-              style: theme.textTheme.labelLarge,
-            ),
+            child: Text('A', style: theme.textTheme.labelLarge),
           ),
           const SizedBox(width: 12),
           Text(
@@ -98,14 +92,23 @@ class HomeScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
+          ),
         ),
       ),
     );
   }
 
   Widget _buildCategories(ThemeData theme) {
-    final categories = ['All', 'Development', 'Design', 'Marketing', 'Business'];
+    final categories = [
+      'All',
+      'Development',
+      'Design',
+      'Marketing',
+      'Business',
+    ];
 
     return Container(
       height: 60,
@@ -125,15 +128,17 @@ class HomeScreen extends StatelessWidget {
               backgroundColor: theme.cardTheme.color,
               selectedColor: theme.colorScheme.primary.withOpacity(0.1),
               labelStyle: theme.textTheme.bodyMedium?.copyWith(
-                color: isSelected
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurface,
+                color:
+                    isSelected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurface,
                 fontWeight: FontWeight.w500,
               ),
               side: BorderSide(
-                color: isSelected
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurface.withOpacity(0.2),
+                color:
+                    isSelected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurface.withOpacity(0.2),
               ),
             ),
           );
@@ -146,15 +151,9 @@ class HomeScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Welcome Back!',
-          style: theme.textTheme.displayMedium,
-        ),
+        Text('Welcome Back!', style: theme.textTheme.displayMedium),
         const SizedBox(height: 8),
-        Text(
-          '2025-03-12 20:39:40 UTC',
-          style: theme.textTheme.bodyMedium,
-        ),
+        Text('2025-03-12 20:39:40 UTC', style: theme.textTheme.bodyMedium),
       ],
     );
   }
@@ -166,10 +165,7 @@ class HomeScreen extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            theme.colorScheme.primary,
-            theme.colorScheme.secondary,
-          ],
+          colors: [theme.colorScheme.primary, theme.colorScheme.secondary],
         ),
         borderRadius: BorderRadius.circular(20),
       ),
@@ -187,30 +183,16 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'Master state management and animations',
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: Colors.white,
-              ),
+              style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
             ),
             const Spacer(),
             Row(
               children: [
-                _buildFeaturedInfoChip(
-                  theme,
-                  Icons.calendar_today,
-                  'Mar 15',
-                ),
+                _buildFeaturedInfoChip(theme, Icons.calendar_today, 'Mar 15'),
                 const SizedBox(width: 12),
-                _buildFeaturedInfoChip(
-                  theme,
-                  Icons.access_time,
-                  '2h 30m',
-                ),
+                _buildFeaturedInfoChip(theme, Icons.access_time, '2h 30m'),
                 const SizedBox(width: 12),
-                _buildFeaturedInfoChip(
-                  theme,
-                  Icons.people,
-                  '5 spots left',
-                ),
+                _buildFeaturedInfoChip(theme, Icons.people, '5 spots left'),
               ],
             ),
           ],
@@ -223,17 +205,13 @@ class HomeScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-       // color: Colors.white.withOpacity(0.2),
+        // color: Colors.white.withOpacity(0.2),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 16,
-            color: Colors.white,
-          ),
+          Icon(icon, size: 16, color: Colors.white),
           const SizedBox(width: 6),
           Text(
             text,
@@ -282,10 +260,7 @@ class HomeScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        subtitle: Text(
-          '$date • $duration',
-          style: theme.textTheme.bodyMedium,
-        ),
+        subtitle: Text('$date • $duration', style: theme.textTheme.bodyMedium),
       ),
     );
   }

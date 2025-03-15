@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:frontend/models/workshop_model.dart';
 import 'package:frontend/user/home/widgets/home_widget/info_chip.dart';
+import 'package:frontend/constants/assets.dart';
 import 'package:intl/intl.dart';
 
 class WorkshopCard extends StatelessWidget {
   final Workshop workshop;
   final VoidCallback? onTap;
   final VoidCallback? onRegister;
-  final String currentDateTime;
-  final String userLogin;
 
   const WorkshopCard({
     super.key,
     required this.workshop,
     this.onTap,
     this.onRegister,
-    this.currentDateTime = '2025-03-15 12:08:37',
-    this.userLogin = 'aorfile',
   });
 
   @override
@@ -60,18 +58,33 @@ class WorkshopCard extends StatelessWidget {
   }
 
   Widget _buildImageHeader(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 160,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-        image: DecorationImage(
-          image: AssetImage(workshop.backgroundImage),
-          fit: BoxFit.cover,
-        ),
-      ),
       child: Stack(
         children: [
-          // Gradient overlay
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            child: CachedNetworkImage(
+              imageUrl: workshop.imageUrl ?? AppAssets.getCategoryImage(workshop.category),
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+              placeholder: (context, url) => Container(
+                color: Theme.of(context).colorScheme.surfaceVariant,
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+              errorWidget: (context, url, error) => Container(
+                color: Theme.of(context).colorScheme.surfaceVariant,
+                child: Icon(
+                  Icons.image_not_supported_rounded,
+                  size: 32,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+          ),
           Container(
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
@@ -85,19 +98,16 @@ class WorkshopCard extends StatelessWidget {
               ),
             ),
           ),
-          // Category indicator
           Positioned(
             bottom: 16,
             left: 16,
             child: _buildCategoryChip(context),
           ),
-          // Status indicator
           Positioned(
             top: 16,
             left: 16,
             child: _buildStatusChip(context),
           ),
-          // Type indicator
           Positioned(
             top: 16,
             right: 16,
@@ -125,6 +135,18 @@ class WorkshopCard extends StatelessWidget {
       case 'business':
         categoryIcon = Icons.business_center_rounded;
         break;
+      case 'technology':
+        categoryIcon = Icons.computer_rounded;
+        break;
+      case 'data':
+        categoryIcon = Icons.data_usage_rounded;
+        break;
+      case 'product':
+        categoryIcon = Icons.inventory_2_rounded;
+        break;
+      case 'leadership':
+        categoryIcon = Icons.psychology_rounded;
+        break;
       default:
         categoryIcon = Icons.category_rounded;
     }
@@ -134,6 +156,13 @@ class WorkshopCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.9),
         borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -143,7 +172,7 @@ class WorkshopCard extends StatelessWidget {
             size: 16,
             color: theme.colorScheme.primary,
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 6),
           Text(
             workshop.category,
             style: theme.textTheme.labelSmall?.copyWith(
@@ -210,7 +239,7 @@ class WorkshopCard extends StatelessWidget {
             size: 16,
             color: Colors.white,
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 6),
           Text(
             statusText,
             style: theme.textTheme.labelSmall?.copyWith(
@@ -293,22 +322,11 @@ class WorkshopCard extends StatelessWidget {
     );
   }
 
- // ... rest of the code remains the same ...
-
   Widget _buildInfoRow(ThemeData theme) {
-    final now = DateTime.parse(currentDateTime);
-    final isToday = workshop.workshopDate.day == now.day &&
-        workshop.workshopDate.month == now.month &&
-        workshop.workshopDate.year == now.year;
-    final isTomorrow = workshop.workshopDate.day == now.day + 1 &&
-        workshop.workshopDate.month == now.month &&
-        workshop.workshopDate.year == now.year;
-
     return Wrap(
       spacing: 12,
       runSpacing: 8,
       children: [
-        // Enhanced Date Chip
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
@@ -322,21 +340,13 @@ class WorkshopCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                isToday
-                    ? Icons.today_rounded
-                    : isTomorrow
-                        ? Icons.event_rounded
-                        : Icons.calendar_month_rounded,
+                Icons.event_rounded,
                 size: 16,
                 color: theme.colorScheme.primary,
               ),
               const SizedBox(width: 6),
               Text(
-                isToday
-                    ? 'Today, ${DateFormat('HH:mm').format(workshop.workshopDate)}'
-                    : isTomorrow
-                        ? 'Tomorrow, ${DateFormat('HH:mm').format(workshop.workshopDate)}'
-                        : DateFormat('MMM d, HH:mm').format(workshop.workshopDate),
+                DateFormat('MMM d, HH:mm').format(workshop.workshopDate),
                 style: theme.textTheme.labelMedium?.copyWith(
                   color: theme.colorScheme.primary,
                   fontWeight: FontWeight.w600,
@@ -345,7 +355,6 @@ class WorkshopCard extends StatelessWidget {
             ],
           ),
         ),
-        // Enhanced Duration Chip
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
@@ -374,7 +383,6 @@ class WorkshopCard extends StatelessWidget {
             ],
           ),
         ),
-        // Enhanced Participants Chip (if applicable)
         if (workshop.minParticipants! > 1)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -398,36 +406,6 @@ class WorkshopCard extends StatelessWidget {
                   'Min. ${workshop.minParticipants}',
                   style: theme.textTheme.labelMedium?.copyWith(
                     color: theme.colorScheme.tertiary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        // Enhanced Creator Chip (if it's user's workshop)
-        if (workshop.createdBy == userLogin)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceVariant.withOpacity(0.9),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: theme.colorScheme.outline.withOpacity(0.1),
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.workspace_premium_rounded,
-                  size: 16,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  'Your Workshop',
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: theme.colorScheme.primary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -505,7 +483,7 @@ class WorkshopCard extends StatelessWidget {
             ),
           ],
         ),
-        FilledButton.icon(
+                FilledButton.icon(
           onPressed: isAvailable ? onRegister : null,
           icon: Icon(
             isAvailable
@@ -540,6 +518,4 @@ class WorkshopCard extends StatelessWidget {
       ],
     );
   }
-
-// ... rest of the code remains the same ...
 }

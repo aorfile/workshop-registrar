@@ -1,0 +1,7 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M12 2.1L3 9.45V21.9H9V14.4H15V21.9H21V9.45L12 2.1Z" 
+    fill="currentColor"/>
+  <!-- Added a warm light in window -->
+  <path d="M10.5 15.9H13.5V17.4H10.5V15.9Z" 
+    fill="#FFFFFF"/>
+</svg>

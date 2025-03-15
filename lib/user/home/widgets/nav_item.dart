@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class NavItem extends StatelessWidget {
-  final IconData icon;
-  final IconData selectedIcon;
+  final Widget icon;
+  final Widget selectedIcon;
   final String label;
   final bool isExpanded;
   final bool isSelected;
@@ -59,16 +59,17 @@ class NavItem extends StatelessWidget {
                     child: child,
                   );
                 },
-                child: Icon(
-                  isSelected ? selectedIcon : icon,
-                  key: ValueKey(isSelected),
-                  size: 24,
-                  color: isSelected
-                      ? selectedItemColor ?? theme.colorScheme.primary
-                      : unselectedItemColor ?? theme.colorScheme.onSurface.withOpacity(0.7),
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: Center(
+                    child: isSelected 
+                        ? selectedIcon
+                        : icon,
+                  ),
                 ),
               ),
-              if (isExpanded) ...[
+              if (isExpanded) ...[ 
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(

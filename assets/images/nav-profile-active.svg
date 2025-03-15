@@ -1,0 +1,7 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Filled version for active state -->
+  <circle cx="12" cy="8" r="4" fill="currentColor"/>
+  <path d="M6 21C6 17.134 8.68629 14 12 14C15.3137 14 18 17.134 18 21" 
+    fill="currentColor"/>
+  <path d="M8 19H16" stroke="#FFFFFF" stroke-width="1.5"/>
+</svg>

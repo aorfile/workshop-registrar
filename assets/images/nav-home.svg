@@ -1,0 +1,10 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M12 2.1L3 9.45V21.9H9V14.4H15V21.9H21V9.45L12 2.1ZM12 4.281L18.6 9.639V19.5H17.4V12H6.6V19.5H5.4V9.639L12 4.281Z" 
+    fill="currentColor"/>
+  <path d="M10.5 15.9H13.5V17.4H10.5V15.9Z" 
+    fill="currentColor"/>
+  <!-- Added a welcoming doorway element -->
+  <path d="M9 19.5H15" 
+    stroke="currentColor" 
+    stroke-width="1.2"/>
+</svg>

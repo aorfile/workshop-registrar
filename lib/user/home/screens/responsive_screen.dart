@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/user/home/widgets/custom_nav_rail.dart';
 import 'package:frontend/user/home/widgets/nav_item.dart';
 
@@ -20,12 +20,12 @@ class ResponsiveNavigation extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: size.width <= 800
-          ? _buildMobileLayout()
-          : _buildDesktopLayout(size.width >= 800),
+          ? _buildMobileLayout(context)
+          : _buildDesktopLayout(context, size.width >= 800),
     );
   }
 
-  Widget _buildMobileLayout() {
+  Widget _buildMobileLayout(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: body,
@@ -33,20 +33,62 @@ class ResponsiveNavigation extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         onTap: onDestinationSelected,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.house),
-            activeIcon: Icon(FontAwesomeIcons.houseChimney),
+            icon: SvgPicture.asset(
+              'assets/images/nav-home.svg',
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).iconTheme.color ?? Colors.grey,
+                BlendMode.srcIn,
+              ),
+              height: 24,
+            ),
+            activeIcon: SvgPicture.asset(
+              'assets/images/nav-home-active.svg',
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).primaryColor,
+                BlendMode.srcIn,
+              ),
+              height: 24,
+            ),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.calendar),
-            activeIcon: Icon(FontAwesomeIcons.solidCalendar),
+            icon: SvgPicture.asset(
+              'assets/images/nav-workshops.svg',
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).iconTheme.color ?? Colors.grey,
+                BlendMode.srcIn,
+              ),
+              height: 24,
+            ),
+            activeIcon: SvgPicture.asset(
+              'assets/images/nav-workshops-active.svg',
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).primaryColor,
+                BlendMode.srcIn,
+              ),
+              height: 24,
+            ),
             label: 'Workshops',
           ),
           BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.user),
-            activeIcon: Icon(FontAwesomeIcons.solidUser),
+            icon: SvgPicture.asset(
+              'assets/images/nav-profile.svg',
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).iconTheme.color ?? Colors.grey,
+                BlendMode.srcIn,
+              ),
+              height: 24,
+            ),
+            activeIcon: SvgPicture.asset(
+              'assets/images/nav-profile-active.svg',
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).primaryColor,
+                BlendMode.srcIn,
+              ),
+              height: 24,
+            ),
             label: 'Profile',
           ),
         ],
@@ -54,7 +96,7 @@ class ResponsiveNavigation extends StatelessWidget {
     );
   }
 
-  Widget _buildDesktopLayout(bool extended) {
+  Widget _buildDesktopLayout(BuildContext context, bool extended) {
     return Scaffold(
       body: SafeArea(
         child: Row(
@@ -82,24 +124,24 @@ class ResponsiveNavigation extends StatelessWidget {
               child: CustomResponsiveNavRail(
                 items: [
                   NavItem(
-                    icon: FontAwesomeIcons.house,
-                    selectedIcon: FontAwesomeIcons.houseChimney,
+                    icon: _buildSvgIcon(context, 'nav-home.svg'),
+                    selectedIcon: _buildSvgIcon(context, 'nav-home-active.svg', isSelected: true),
                     label: 'Home',
                     isExpanded: extended,
                     isSelected: currentIndex == 0,
                     onTap: () => onDestinationSelected(0),
                   ),
                   NavItem(
-                    icon: FontAwesomeIcons.calendar,
-                    selectedIcon: FontAwesomeIcons.solidCalendar,
+                    icon: _buildSvgIcon(context, 'nav-workshops.svg'),
+                    selectedIcon: _buildSvgIcon(context, 'nav-workshops-active.svg', isSelected: true),
                     label: 'Workshops',
                     isExpanded: extended,
                     isSelected: currentIndex == 1,
                     onTap: () => onDestinationSelected(1),
                   ),
                   NavItem(
-                    icon: FontAwesomeIcons.user,
-                    selectedIcon: FontAwesomeIcons.solidUser,
+                    icon: _buildSvgIcon(context, 'nav-profile.svg'),
+                    selectedIcon: _buildSvgIcon(context, 'nav-profile-active.svg', isSelected: true),
                     label: 'Profile',
                     isExpanded: extended,
                     isSelected: currentIndex == 2,
@@ -116,6 +158,19 @@ class ResponsiveNavigation extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildSvgIcon(BuildContext context, String assetName, {bool isSelected = false}) {
+    return SvgPicture.asset(
+      'assets/images/$assetName',
+      colorFilter: ColorFilter.mode(
+        isSelected 
+            ? Theme.of(context).primaryColor
+            : Theme.of(context).iconTheme.color ?? Colors.grey,
+        BlendMode.srcIn,
+      ),
+      height: 24,
     );
   }
 }

@@ -12,23 +12,50 @@ class WorkshopSearchBar extends StatelessWidget {
     return Container(
       color: theme.cardTheme.color,
       padding: const EdgeInsets.all(16),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: 'Search workshops...',
-          hintStyle: theme.textTheme.bodyMedium,
-          prefixIcon: Icon(
-            Icons.search,
-            color: theme.colorScheme.onSurface.withOpacity(0.5),
-          ),
-          filled: true,
-          fillColor: theme.colorScheme.surface,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 14,
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.primary.withOpacity(0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: TextField(
+          onChanged: onChanged,
+          decoration: InputDecoration(
+            hintText: 'Search workshops...',
+            hintStyle: theme.textTheme.bodyLarge?.copyWith(
+              color: theme.colorScheme.onSurface.withOpacity(0.5),
+            ),
+            prefixIcon: Icon(
+              Icons.search_rounded,
+              color: theme.colorScheme.primary,
+              size: 24,
+            ),
+            suffixIcon: Container(
+              margin: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.tune_rounded,
+                color: theme.colorScheme.primary,
+                size: 20,
+              ),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 16,
+            ),
           ),
         ),
       ),

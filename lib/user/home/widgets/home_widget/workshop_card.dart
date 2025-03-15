@@ -7,12 +7,16 @@ class WorkshopCard extends StatelessWidget {
   final Workshop workshop;
   final VoidCallback? onTap;
   final VoidCallback? onRegister;
+  final String currentDateTime;
+  final String userLogin;
 
   const WorkshopCard({
     super.key,
     required this.workshop,
     this.onTap,
     this.onRegister,
+    this.currentDateTime = '2025-03-15 12:08:37',
+    this.userLogin = 'aorfile',
   });
 
   @override
@@ -81,12 +85,19 @@ class WorkshopCard extends StatelessWidget {
               ),
             ),
           ),
-          // Status and type indicators
+          // Category indicator
+          Positioned(
+            bottom: 16,
+            left: 16,
+            child: _buildCategoryChip(context),
+          ),
+          // Status indicator
           Positioned(
             top: 16,
             left: 16,
             child: _buildStatusChip(context),
           ),
+          // Type indicator
           Positioned(
             top: 16,
             right: 16,
@@ -97,29 +108,83 @@ class WorkshopCard extends StatelessWidget {
     );
   }
 
+  Widget _buildCategoryChip(BuildContext context) {
+    final theme = Theme.of(context);
+    IconData categoryIcon;
+
+    switch (workshop.category.toLowerCase()) {
+      case 'development':
+        categoryIcon = Icons.code_rounded;
+        break;
+      case 'design':
+        categoryIcon = Icons.palette_rounded;
+        break;
+      case 'marketing':
+        categoryIcon = Icons.trending_up_rounded;
+        break;
+      case 'business':
+        categoryIcon = Icons.business_center_rounded;
+        break;
+      default:
+        categoryIcon = Icons.category_rounded;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            categoryIcon,
+            size: 16,
+            color: theme.colorScheme.primary,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            workshop.category,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildStatusChip(BuildContext context) {
     final theme = Theme.of(context);
+    IconData statusIcon;
     Color statusColor;
     String statusText;
 
     switch (workshop.status) {
       case 'scheduled':
+        statusIcon = Icons.event_available_rounded;
         statusColor = theme.colorScheme.primary;
         statusText = 'Upcoming';
         break;
       case 'in-progress':
+        statusIcon = Icons.play_circle_outline_rounded;
         statusColor = theme.colorScheme.secondary;
         statusText = 'In Progress';
         break;
       case 'completed':
+        statusIcon = Icons.check_circle_outline_rounded;
         statusColor = Colors.grey;
         statusText = 'Completed';
         break;
       case 'cancelled':
+        statusIcon = Icons.cancel_outlined;
         statusColor = theme.colorScheme.error;
         statusText = 'Cancelled';
         break;
       default:
+        statusIcon = Icons.help_outline_rounded;
         statusColor = Colors.grey;
         statusText = 'Unknown';
     }
@@ -129,13 +194,31 @@ class WorkshopCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: statusColor.withOpacity(0.9),
         borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: statusColor.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      child: Text(
-        statusText,
-        style: theme.textTheme.labelSmall?.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            statusIcon,
+            size: 16,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            statusText,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -148,24 +231,24 @@ class WorkshopCard extends StatelessWidget {
 
     switch (workshop.locationType) {
       case 'virtual':
-        typeIcon = Icons.video_camera_front;
+        typeIcon = Icons.videocam_rounded;
         typeColor = theme.colorScheme.primary;
-        typeText = 'Virtual';
+        typeText = 'Virtual Workshop';
         break;
       case 'physical':
-        typeIcon = Icons.location_on;
+        typeIcon = Icons.meeting_room_rounded;
         typeColor = theme.colorScheme.secondary;
-        typeText = 'In-Person';
+        typeText = 'In-Person Workshop';
         break;
       case 'hybrid':
-        typeIcon = Icons.devices;
+        typeIcon = Icons.devices_rounded;
         typeColor = theme.colorScheme.tertiary;
-        typeText = 'Hybrid';
+        typeText = 'Hybrid Workshop';
         break;
       default:
-        typeIcon = Icons.help_outline;
+        typeIcon = Icons.help_outline_rounded;
         typeColor = Colors.grey;
-        typeText = 'Unknown';
+        typeText = 'Unknown Format';
     }
 
     return Tooltip(
@@ -178,7 +261,7 @@ class WorkshopCard extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
-              blurRadius: 4,
+              blurRadius: 8,
               offset: const Offset(0, 2),
             ),
           ],
@@ -210,23 +293,146 @@ class WorkshopCard extends StatelessWidget {
     );
   }
 
+ // ... rest of the code remains the same ...
+
   Widget _buildInfoRow(ThemeData theme) {
+    final now = DateTime.parse(currentDateTime);
+    final isToday = workshop.workshopDate.day == now.day &&
+        workshop.workshopDate.month == now.month &&
+        workshop.workshopDate.year == now.year;
+    final isTomorrow = workshop.workshopDate.day == now.day + 1 &&
+        workshop.workshopDate.month == now.month &&
+        workshop.workshopDate.year == now.year;
+
     return Wrap(
       spacing: 12,
       runSpacing: 8,
       children: [
-        InfoChip(
-          icon: Icons.calendar_today,
-          text: DateFormat('MMM d, y').format(workshop.workshopDate),
+        // Enhanced Date Chip
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primaryContainer.withOpacity(0.9),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: theme.colorScheme.primary.withOpacity(0.1),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isToday
+                    ? Icons.today_rounded
+                    : isTomorrow
+                        ? Icons.event_rounded
+                        : Icons.calendar_month_rounded,
+                size: 16,
+                color: theme.colorScheme.primary,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                isToday
+                    ? 'Today, ${DateFormat('HH:mm').format(workshop.workshopDate)}'
+                    : isTomorrow
+                        ? 'Tomorrow, ${DateFormat('HH:mm').format(workshop.workshopDate)}'
+                        : DateFormat('MMM d, HH:mm').format(workshop.workshopDate),
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
         ),
-        InfoChip(
-          icon: Icons.access_time,
-          text: workshop.durationFormatted,
+        // Enhanced Duration Chip
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.secondaryContainer.withOpacity(0.9),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: theme.colorScheme.secondary.withOpacity(0.1),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.timelapse_rounded,
+                size: 16,
+                color: theme.colorScheme.secondary,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                workshop.durationFormatted,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.colorScheme.secondary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
         ),
+        // Enhanced Participants Chip (if applicable)
         if (workshop.minParticipants! > 1)
-          InfoChip(
-            icon: Icons.group,
-            text: 'Min. ${workshop.minParticipants} participants',
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.tertiaryContainer.withOpacity(0.9),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: theme.colorScheme.tertiary.withOpacity(0.1),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.group_rounded,
+                  size: 16,
+                  color: theme.colorScheme.tertiary,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  'Min. ${workshop.minParticipants}',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.tertiary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        // Enhanced Creator Chip (if it's user's workshop)
+        if (workshop.createdBy == userLogin)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceVariant.withOpacity(0.9),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: theme.colorScheme.outline.withOpacity(0.1),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.workspace_premium_rounded,
+                  size: 16,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  'Your Workshop',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
       ],
     );
@@ -234,6 +440,8 @@ class WorkshopCard extends StatelessWidget {
 
   Widget _buildFooter(ThemeData theme) {
     final isAvailable = workshop.spotsLeft > 0 && workshop.isScheduled;
+    final isFilling = workshop.currentRegistrations > (workshop.capacity * 0.7);
+    final isAlmostFull = workshop.currentRegistrations > (workshop.capacity * 0.9);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -241,26 +449,97 @@ class WorkshopCard extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '${workshop.spotsLeft} spots left',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: isAvailable ? theme.colorScheme.primary : theme.colorScheme.error,
-                fontWeight: FontWeight.w500,
-              ),
+            Row(
+              children: [
+                Icon(
+                  isAvailable
+                      ? isAlmostFull
+                          ? Icons.flash_on_rounded
+                          : isFilling
+                              ? Icons.directions_run_rounded
+                              : Icons.how_to_reg_rounded
+                      : Icons.no_accounts_rounded,
+                  size: 18,
+                  color: isAvailable
+                      ? isAlmostFull
+                          ? theme.colorScheme.error
+                          : isFilling
+                              ? theme.colorScheme.error.withOpacity(0.7)
+                              : theme.colorScheme.primary
+                      : theme.colorScheme.error,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  isAlmostFull
+                      ? 'Almost full!'
+                      : '${workshop.spotsLeft} spots left',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: isAvailable
+                        ? isAlmostFull
+                            ? theme.colorScheme.error
+                            : isFilling
+                                ? theme.colorScheme.error.withOpacity(0.7)
+                                : theme.colorScheme.primary
+                        : theme.colorScheme.error,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
-            Text(
-              '${workshop.currentRegistrations}/${workshop.capacity} registered',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
-              ),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Icon(
+                  Icons.group_outlined,
+                  size: 16,
+                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  '${workshop.currentRegistrations}/${workshop.capacity} registered',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
-        FilledButton(
+        FilledButton.icon(
           onPressed: isAvailable ? onRegister : null,
-          child: Text(isAvailable ? 'Register' : 'Full'),
+          icon: Icon(
+            isAvailable
+                ? isAlmostFull
+                    ? Icons.bolt_rounded
+                    : Icons.add_rounded
+                : Icons.block_rounded,
+            size: 18,
+          ),
+          label: Text(
+            isAvailable
+                ? isAlmostFull
+                    ? 'Quick Join'
+                    : 'Register'
+                : 'Full',
+          ),
+          style: FilledButton.styleFrom(
+            backgroundColor: isAvailable
+                ? isAlmostFull
+                    ? theme.colorScheme.error
+                    : null
+                : null,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
+          ),
         ),
       ],
     );
   }
+
+// ... rest of the code remains the same ...
 }

@@ -161,10 +161,15 @@ class _HomeScreenState extends State<HomeScreen> {
               status: 'scheduled',
             );
 
-            return WorkshopCard(
-              workshop: workshop,
-              onTap: () => _navigateToWorkshopDetails(context, workshop: workshop),
-              onRegister: () => _registerForWorkshop(context, workshop),
+            return Column(
+              children: [
+                SizedBox(height: 16,),
+                WorkshopCard(
+                  workshop: workshop,
+                  onTap: () => _navigateToWorkshopDetails(context, workshop: workshop),
+                  onRegister: () => _registerForWorkshop(context, workshop),
+                ),
+              ],
             );
           },
         ),

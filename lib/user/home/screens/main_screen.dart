@@ -230,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
       minParticipants: 5,
       status: 'scheduled',
     );
-    context.push('/details/${workshopToUse.workshopId}', extra: workshopToUse);
+    context.go('/details', extra: workshopToUse);
   }
 
   void _navigateToRegisterScreen(BuildContext context, {Workshop? workshop}) {
@@ -277,7 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _viewAllWorkshops(BuildContext context) {
-    context.push('/workshops');
+    context.go('/workshops');
   }
 
   void _registerForWorkshop(BuildContext context, Workshop workshop) {

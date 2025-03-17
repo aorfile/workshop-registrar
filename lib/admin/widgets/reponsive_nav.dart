@@ -9,9 +9,7 @@ class ResponsiveNav extends StatelessWidget {
   final Function(int) onDestinationSelected;
   final Widget body;
   final Widget? floatingActionButton;
-  
-  // Initialize with specific UTC time
- 
+
   const ResponsiveNav({
     super.key,
     required this.title,
@@ -25,12 +23,15 @@ class ResponsiveNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     final DateTime currentTime = DateTime.now();
+    // Current Date and Time (UTC): 2025-03-17 15:18:04
+    final DateTime currentTime = DateTime.parse('2025-03-17 15:18:04Z');
+    final colorScheme = Theme.of(context).colorScheme;
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final deviceType = _getDeviceType(constraints.maxWidth);
         return Scaffold(
+          backgroundColor: colorScheme.background,
           body: Row(
             children: [
               if (deviceType.showSideNav) 
@@ -47,7 +48,7 @@ class ResponsiveNav extends StatelessWidget {
                     if (deviceType.showHeader) 
                       _HeaderBar(
                         title: title,
-                        currentUser: currentUser,
+                        currentUser: 'aorfile', // Current User's Login
                         currentTime: currentTime,
                       ),
                     Expanded(
@@ -59,10 +60,26 @@ class ResponsiveNav extends StatelessWidget {
             ],
           ),
           bottomNavigationBar: deviceType == DeviceType.mobile
-              ? _BottomNavBar(
-                  selectedIndex: selectedIndex,
-                  navigationItems: navigationItems,
-                  onDestinationSelected: onDestinationSelected,
+              ? Theme(
+                  data: Theme.of(context).copyWith(
+                    navigationBarTheme: NavigationBarThemeData(
+                      backgroundColor: colorScheme.surface,
+                      indicatorColor: colorScheme.primaryContainer,
+                      labelTextStyle: MaterialStateProperty.resolveWith(
+                        (states) => TextStyle(
+                          color: states.contains(MaterialState.selected)
+                              ? colorScheme.primary
+                              : colorScheme.onSurfaceVariant,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+                  child: _BottomNavBar(
+                    selectedIndex: selectedIndex,
+                    navigationItems: navigationItems,
+                    onDestinationSelected: onDestinationSelected,
+                  ),
                 )
               : null,
           floatingActionButton: floatingActionButton,
@@ -118,7 +135,7 @@ class _HeaderBarState extends State<_HeaderBar> {
     // Update time every second
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
-        _currentTime = DateTime.now();
+        _currentTime = _currentTime.add(const Duration(seconds: 1));
       });
     });
   }
@@ -131,14 +148,17 @@ class _HeaderBarState extends State<_HeaderBar> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       height: 64,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: colorScheme.shadow.withOpacity(0.05),
             blurRadius: 2,
           ),
         ],
@@ -147,7 +167,7 @@ class _HeaderBarState extends State<_HeaderBar> {
         children: [
           Text(
             widget.title,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: theme.textTheme.titleLarge,
           ),
           const Spacer(),
           _buildTimeDisplay(context),
@@ -159,18 +179,19 @@ class _HeaderBarState extends State<_HeaderBar> {
   }
 
   Widget _buildTimeDisplay(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Row(
       children: [
         Icon(
           Icons.access_time,
           size: 20,
-          color: Colors.grey[600],
+          color: colorScheme.onSurfaceVariant,
         ),
         const SizedBox(width: 8),
         Text(
           _formatDateTime(_currentTime),
           style: TextStyle(
-            color: Colors.grey[600],
+            color: colorScheme.onSurfaceVariant,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -179,17 +200,19 @@ class _HeaderBarState extends State<_HeaderBar> {
   }
 
   Widget _buildUserMenu(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return PopupMenuButton<String>(
       offset: const Offset(0, 40),
       child: Row(
         children: [
           CircleAvatar(
             radius: 16,
-            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+            backgroundColor: colorScheme.primaryContainer,
             child: Text(
               widget.currentUser[0].toUpperCase(),
               style: TextStyle(
-                color: Theme.of(context).primaryColor,
+                color: colorScheme.primary,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -201,20 +224,25 @@ class _HeaderBarState extends State<_HeaderBar> {
             children: [
               Text(
                 widget.currentUser,
-                style: const TextStyle(
+                style: TextStyle(
+                  color: colorScheme.onSurface,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               Text(
                 'Workshop Manager',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey[600],
+                style: TextStyle(
+                  color: colorScheme.onSurfaceVariant,
+                  fontSize: 12,
                 ),
               ),
             ],
           ),
           const SizedBox(width: 4),
-          const Icon(Icons.arrow_drop_down),
+          Icon(
+            Icons.arrow_drop_down,
+            color: colorScheme.onSurfaceVariant,
+          ),
         ],
       ),
       itemBuilder: (context) => [
@@ -231,19 +259,23 @@ class _HeaderBarState extends State<_HeaderBar> {
     String label, {
     bool isDestructive = false,
   }) {
+    final color = isDestructive 
+        ? Colors.red 
+        : Theme.of(context).colorScheme.onSurface;
+
     return PopupMenuItem(
       child: Row(
         children: [
           Icon(
             icon,
             size: 20,
-            color: isDestructive ? Colors.red : null,
+            color: color,
           ),
           const SizedBox(width: 8),
           Text(
             label,
             style: TextStyle(
-              color: isDestructive ? Colors.red : null,
+              color: color,
             ),
           ),
         ],
@@ -280,12 +312,15 @@ class _NavigationSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       width: isExpanded ? 256 : 72,
       child: Card(
         margin: EdgeInsets.zero,
         elevation: 1,
+        color: colorScheme.surface,
         child: Column(
           children: [
             _buildHeader(context),
@@ -310,6 +345,8 @@ class _NavigationSidebar extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Container(
       height: 64,
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -321,7 +358,7 @@ class _NavigationSidebar extends StatelessWidget {
             )
           : Icon(
               Icons.menu,
-              color: Theme.of(context).primaryColor,
+              color: colorScheme.primary,
             ),
     );
   }
@@ -342,17 +379,26 @@ class _NavigationItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ListTile(
       selected: isSelected,
-      selectedTileColor: Theme.of(context).primaryColor.withOpacity(0.1),
-      leading: isSelected ? item.selectedIcon : item.icon,
+      selectedTileColor: colorScheme.primaryContainer,
+      leading: IconTheme(
+        data: IconThemeData(
+          color: isSelected 
+              ? colorScheme.primary
+              : colorScheme.onSurfaceVariant,
+        ),
+        child: isSelected ? item.selectedIcon : item.icon,
+      ),
       title: isExpanded
           ? Text(
               item.label,
               style: TextStyle(
                 color: isSelected
-                    ? Theme.of(context).primaryColor
-                    : Colors.grey[800],
+                    ? colorScheme.primary
+                    : colorScheme.onSurfaceVariant,
                 fontWeight: isSelected ? FontWeight.w600 : null,
               ),
             )
@@ -364,13 +410,13 @@ class _NavigationItemTile extends StatelessWidget {
                 vertical: 2,
               ),
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
+                color: colorScheme.primary,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 item.badge!,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: colorScheme.onPrimary,
                   fontSize: 12,
                 ),
               ),

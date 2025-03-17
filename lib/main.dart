@@ -3,14 +3,8 @@ import 'package:frontend/routes.dart';
 import 'package:frontend/services/user_provider.dart';
 import 'package:frontend/themes/app_theme.dart';
 import 'package:frontend/themes/theme_provider.dart';
-import 'package:frontend/user/auth/views/form.dart';
-import 'package:frontend/user/auth/views/password_reset_screen.dart';
-import 'package:frontend/user/auth/views/phone_login_screen.dart';
-import 'package:frontend/user/auth/views/phone_verification_screen.dart';
-import 'package:frontend/user/auth/views/sign_in_screen.dart';
-import 'package:frontend/user/auth/views/sign_up_screen.dart';
+
 import 'package:provider/provider.dart';
-import 'package:frontend/user/home/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

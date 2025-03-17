@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/admin/screens/create_worshop_screen.dart';
-import 'package:frontend/admin/screens/dashboard_screen.dart';
+
 import 'package:frontend/admin/widgets/workshop_manager.dart';
 import 'package:frontend/models/workshop_model.dart';
 import 'package:frontend/user/auth/views/sign_in_screen.dart';
@@ -18,7 +18,7 @@ final GoRouter router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) =>  WorkshopManager(),
+      builder: (context, state) =>  MainScreen(),
     ),
     GoRoute(
       path: '/profile',

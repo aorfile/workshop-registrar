@@ -142,7 +142,7 @@ This project is part of a challenge, but contributions for improvements are welc
 - Contributors and Supporters
 
 ## 🎥 Video Demonstration
-[Watch the 3-minute demo video here](#)
+[Watch the 3-minute demo video here](https://firebasestorage.googleapis.com/v0/b/instagram-clone-4002.appspot.com/o/video.mp4?alt=media)
 
 ## 📊 Project Stats
 - **Last Updated**: 2025-03-17 18:36:13 UTC

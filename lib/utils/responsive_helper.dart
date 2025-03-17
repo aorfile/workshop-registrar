@@ -5,7 +5,7 @@ enum DeviceType {
   tablet,
   desktop,
 }
-
+// cole
 class ResponsiveBuilder extends StatelessWidget {
   final Widget Function(BuildContext, DeviceType) builder;
 

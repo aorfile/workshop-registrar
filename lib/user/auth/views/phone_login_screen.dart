@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/user/auth/components/auth_responsive.dart';
 
-import 'package:frontend/user/auth/components/text_field_login.dart';
 import 'package:frontend/user/country/country_code_picker.dart';
 import 'package:frontend/user/country/country_data.dart';
 import 'package:frontend/user/country/country_model.dart';

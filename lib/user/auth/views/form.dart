@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/user/auth/components/auth_responsive.dart';
 import 'package:frontend/user/auth/components/text_field_login.dart';
+import 'package:go_router/go_router.dart';
 
 class FormPage extends StatefulWidget {
   const FormPage({super.key});
@@ -46,19 +47,11 @@ class _FormPageState extends State<FormPage> {
   }
 
   // Handle form submission
-  void _handleSubmit() {
-    if (_validateForm()) {
-      final formData = {
-        'name': _nameController.text,
-        'email': _emailController.text,
-        'phone': _phoneController.text,
-        'department': _departmentController.text,
-        'role': _selectedRole,
-      };
-
-      // TODO: Handle form submission
-      print('Form Data: $formData');
-    }
+  void _handleSubmit() async {
+    try {
+      await Future.delayed(const Duration(seconds: 2));
+      context.go('/home');
+    } catch (e) {}
   }
 
   @override

@@ -1,25 +1,22 @@
-// Current Date and Time (UTC): 2025-03-14 14:56:07
-// Current User's Login: aorfile
-
 import 'package:flutter/material.dart';
-
 import 'package:frontend/user/auth/components/divider.dart';
 import 'package:frontend/user/auth/components/social_sign_in.dart';
 import 'package:go_router/go_router.dart';
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+class AdminAuthPage extends StatefulWidget {
+  const AdminAuthPage({super.key});
 
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _AdminAuthPageState createState() => _AdminAuthPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _AdminAuthPageState extends State<AdminAuthPage>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   bool _isObscure = true;
-  bool _isConfirmObscure = true;
   bool _isLoading = false;
-  bool _acceptTerms = false;
+  bool _rememberMe = false;
+  bool _isSignIn = true; // Toggle between sign in and sign up
 
   // Controllers
   final TextEditingController _nameController = TextEditingController();
@@ -27,8 +24,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  //provider
+  final TextEditingController _adminCodeController = TextEditingController();
 
   @override
   void dispose() {
@@ -36,30 +32,29 @@ class _SignUpPageState extends State<SignUpPage> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _phoneController.dispose();
+    _adminCodeController.dispose();
     super.dispose();
   }
 
-  Future<void> _handleSignUp() async {
+  Future<void> _handleSubmit() async {
     if (_formKey.currentState?.validate() ?? false) {
-      if (!_acceptTerms) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please accept the terms and conditions'),
-          ),
-        );
-        return;
-      }
-
       setState(() => _isLoading = true);
 
       try {
-        await Future.delayed(const Duration(seconds: 2));
-        context.go('/form');
+        // TODO: Implement your admin authentication logic here
+        if (_isSignIn) {
+          // Handle admin sign in
+          await Future.delayed(const Duration(seconds: 2)); // Simulate API call
+          context.go('/admin/dashboard');
+        } else {
+          // Handle admin sign up
+          await Future.delayed(const Duration(seconds: 2)); // Simulate API call
+          setState(() => _isSignIn = true);
+        }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Sign up failed: ${e.toString()}')),
+            SnackBar(content: Text('Authentication failed: ${e.toString()}')),
           );
         }
       } finally {
@@ -116,31 +111,52 @@ class _SignUpPageState extends State<SignUpPage> {
                         // Logo
                         Image.asset('assets/images/logo.webp', height: 80),
                         const SizedBox(height: 24),
-                        // Welcome Message
-                        const Text(
-                          'Create Account',
-                          style: TextStyle(
+                        // Title
+                        Text(
+                          _isSignIn ? 'Admin Login' : 'Admin Registration',
+                          style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 8),
+                        // Current Date Time
                         Text(
-                          'UTC: 2025-03-14 14:56:07',
+                          'UTC: 2025-03-17 16:55:08',
                           style: TextStyle(
                             fontSize: 14,
                             color: Theme.of(context).colorScheme.outline,
                           ),
                         ),
                         const SizedBox(height: 40),
-                        // Name Field
+
+                        if (!_isSignIn) ...[
+                          // Name Field
+                          TextFormField(
+                            controller: _nameController,
+                            decoration: InputDecoration(
+                              labelText: 'Full Name',
+                              prefixIcon: const Icon(Icons.person_outline),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value?.isEmpty ?? true) {
+                                return 'Please enter your name';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                        ],
 
                         // Email Field
                         TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                            labelText: 'Email',
+                            labelText: 'Admin Email',
                             prefixIcon: const Icon(Icons.email_outlined),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -158,8 +174,8 @@ class _SignUpPageState extends State<SignUpPage> {
                             return null;
                           },
                         ),
-
                         const SizedBox(height: 16),
+
                         // Password Field
                         TextFormField(
                           controller: _passwordController,
@@ -167,6 +183,9 @@ class _SignUpPageState extends State<SignUpPage> {
                           decoration: InputDecoration(
                             labelText: 'Password',
                             prefixIcon: const Icon(Icons.lock_outline),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _isObscure
@@ -177,110 +196,94 @@ class _SignUpPageState extends State<SignUpPage> {
                                   () =>
                                       setState(() => _isObscure = !_isObscure),
                             ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
                           ),
                           validator: (value) {
                             if (value?.isEmpty ?? true) {
-                              return 'Please enter a password';
+                              return 'Please enter your password';
                             }
-                            if (value!.length < 8) {
+                            if (!_isSignIn && value!.length < 8) {
                               return 'Password must be at least 8 characters';
                             }
                             return null;
                           },
                         ),
-                        const SizedBox(height: 16),
-                        // Confirm Password Field
-                        TextFormField(
-                          controller: _confirmPasswordController,
-                          obscureText: _isConfirmObscure,
-                          decoration: InputDecoration(
-                            labelText: 'Confirm Password',
-                            prefixIcon: const Icon(Icons.lock_outline),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _isConfirmObscure
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
+
+                        if (!_isSignIn) ...[
+                          const SizedBox(height: 16),
+                          // Confirm Password Field
+                          TextFormField(
+                            controller: _confirmPasswordController,
+                            obscureText: _isObscure,
+                            decoration: InputDecoration(
+                              labelText: 'Confirm Password',
+                              prefixIcon: const Icon(Icons.lock_outline),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              onPressed:
-                                  () => setState(
-                                    () =>
-                                        _isConfirmObscure = !_isConfirmObscure,
-                                  ),
                             ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+                            validator: (value) {
+                              if (value?.isEmpty ?? true) {
+                                return 'Please confirm your password';
+                              }
+                              if (value != _passwordController.text) {
+                                return 'Passwords do not match';
+                              }
+                              return null;
+                            },
                           ),
-                          validator: (value) {
-                            if (value?.isEmpty ?? true) {
-                              return 'Please confirm your password';
-                            }
-                            if (value != _passwordController.text) {
-                              return 'Passwords do not match';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        // Terms and Conditions
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: _acceptTerms,
-                              onChanged:
-                                  (value) => setState(
-                                    () => _acceptTerms = value ?? false,
-                                  ),
-                            ),
-                            Expanded(
-                              child: Text.rich(
-                                TextSpan(
-                                  text: 'I accept the ',
-                                  children: [
-                                    WidgetSpan(
-                                      child: MouseRegion(
-                                        cursor:
-                                            SystemMouseCursors
-                                                .click, // Change cursor only on hover
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            // TODO: Open terms and conditions dialog
-                                          },
-                                          child: Text(
-                                            'Terms and Conditions',
-                                            style: TextStyle(
-                                              color:
-                                                  Theme.of(
-                                                    context,
-                                                  ).colorScheme.primary,
-                                              fontWeight:
-                                                  FontWeight
-                                                      .bold, // Make it bold
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                          const SizedBox(height: 16),
+                          // Admin Code Field
+                          TextFormField(
+                            controller: _adminCodeController,
+                            decoration: InputDecoration(
+                              labelText: 'Admin Registration Code',
+                              prefixIcon: const Icon(
+                                Icons.admin_panel_settings,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                          ],
-                        ),
+                            validator: (value) {
+                              if (value?.isEmpty ?? true) {
+                                return 'Please enter the admin code';
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
+
+                        if (_isSignIn) ...[
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: _rememberMe,
+                                onChanged:
+                                    (value) => setState(
+                                      () => _rememberMe = value ?? false,
+                                    ),
+                              ),
+                              const Text('Remember me'),
+                              const Spacer(),
+                              TextButton(
+                                onPressed: () {
+                                  // Navigate to password reset
+                                },
+                                child: const Text('Forgot Password?'),
+                              ),
+                            ],
+                          ),
+                        ],
+
                         const SizedBox(height: 24),
-                        // Sign Up Button
+                        // Submit Button
                         SizedBox(
                           width: double.infinity,
                           height: 50,
                           child: ElevatedButton(
-                            onPressed: () {
-                              _isLoading ? null : _handleSignUp();
-                            },
+                            onPressed: _isLoading ? null : _handleSubmit,
                             style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).primaryColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
@@ -298,47 +301,31 @@ class _SignUpPageState extends State<SignUpPage> {
                                             ),
                                       ),
                                     )
-                                    : const Text(
-                                      'Sign Up',
-                                      style: TextStyle(fontSize: 16),
+                                    : Text(
+                                      _isSignIn ? 'Sign In' : 'Sign Up',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                      ),
                                     ),
                           ),
                         ),
+
                         const SizedBox(height: 24),
-                        // Or Separator
-                        const OrDivider(),
-                        const SizedBox(height: 24),
-                        // Social Sign Up Options
+                        // Toggle Sign In/Sign Up
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SocialSignInButton(
-                              image: 'assets/images/google.png',
-                              onPressed: () async {
-                                // Handle Google sign up
-                              },
+                            Text(
+                              _isSignIn
+                                  ? "Don't have an admin account?"
+                                  : "Already have an admin account?",
                             ),
-                            const SizedBox(width: 16),
-                            SocialSignInButton(
-                              image: 'assets/images/google.png',
-                              onPressed: () {
-                                // Handle mobile sign up
-                              },
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-                        // Sign In Toggle
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('Already have an account?'),
                             TextButton(
                               onPressed: () {
-                                // Navigate to sign in
-                                Navigator.pop(context);
+                                setState(() => _isSignIn = !_isSignIn);
                               },
-                              child: const Text('Sign In'),
+                              child: Text(_isSignIn ? 'Sign Up' : 'Sign In'),
                             ),
                           ],
                         ),

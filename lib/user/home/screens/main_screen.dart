@@ -87,7 +87,8 @@ class _HomeScreenState extends State<HomeScreen> {
       workshop: Workshop(
         workshopId: 'featured-1',
         title: 'Advanced Flutter Development',
-        description: 'Master state management, animations, and advanced UI patterns',
+        description:
+            'Master state management, animations, and advanced UI patterns',
         workshopDate: DateTime.now().add(const Duration(days: 1)),
         endTime: DateTime.now().add(const Duration(days: 1, hours: 3)),
         location: 'Virtual Classroom',
@@ -155,7 +156,10 @@ class _HomeScreenState extends State<HomeScreen> {
               createdAt: DateTime.parse(_currentDateTime),
               updatedAt: DateTime.parse(_currentDateTime),
               category: _getWorkshopCategory(index),
-              meetingLink: index % 2 == 0 ? 'https://meet.google.com/workshop-$index' : null,
+              meetingLink:
+                  index % 2 == 0
+                      ? 'https://meet.google.com/workshop-$index'
+                      : null,
               prerequisites: 'Required prerequisites for Workshop ${index + 1}',
               materialsUrl: 'https://materials.com/workshop-$index',
               minParticipants: 3,
@@ -164,10 +168,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
             return Column(
               children: [
-                SizedBox(height: 16,),
+                SizedBox(height: 16),
                 WorkshopCard(
                   workshop: workshop,
-                  onTap: () => _navigateToWorkshopDetails(context, workshop: workshop),
+                  onTap:
+                      () => _navigateToWorkshopDetails(
+                        context,
+                        workshop: workshop,
+                      ),
                   onRegister: () => _registerForWorkshop(context, workshop),
                 ),
               ],
@@ -201,78 +209,93 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   String _getWorkshopLocation(int index) {
-    return index % 2 == 0 ? 'Virtual Classroom' : 'Innovation Hub, Floor ${index + 1}';
+    return index % 2 == 0
+        ? 'Virtual Classroom'
+        : 'Innovation Hub, Floor ${index + 1}';
   }
 
   String _getWorkshopCategory(int index) {
-    final categories = ['Design', 'Marketing', 'Business', 'Development', 'Marketing'];
+    final categories = [
+      'Design',
+      'Marketing',
+      'Business',
+      'Development',
+      'Marketing',
+    ];
     return categories[index % categories.length];
   }
 
   void _navigateToWorkshopDetails(BuildContext context, {Workshop? workshop}) {
-    final workshopToUse = workshop ?? Workshop(
-      workshopId: 'featured-1',
-      title: 'Advanced Flutter Development',
-      description: 'Master state management, animations, and advanced UI patterns',
-      workshopDate: DateTime.now().add(const Duration(days: 1)),
-      endTime: DateTime.now().add(const Duration(days: 1, hours: 3)),
-      location: 'Virtual Classroom',
-      locationType: 'virtual',
-      capacity: 30,
-      currentRegistrations: 22,
-      createdBy: _currentUser,
-      createdAt: DateTime.parse(_currentDateTime),
-      updatedAt: DateTime.parse(_currentDateTime),
-      category: 'Development',
-      meetingLink: 'https://meet.google.com/featured-workshop',
-      prerequisites: 'Basic Flutter knowledge',
-      materialsUrl: 'https://workshop-materials.com/flutter-advanced',
-      minParticipants: 5,
-      status: 'scheduled',
-    );
-    context.go('/details', extra: workshopToUse);
+    final workshopToUse =
+        workshop ??
+        Workshop(
+          workshopId: 'featured-1',
+          title: 'Advanced Flutter Development',
+          description:
+              'Master state management, animations, and advanced UI patterns',
+          workshopDate: DateTime.now().add(const Duration(days: 1)),
+          endTime: DateTime.now().add(const Duration(days: 1, hours: 3)),
+          location: 'Virtual Classroom',
+          locationType: 'virtual',
+          capacity: 30,
+          currentRegistrations: 22,
+          createdBy: _currentUser,
+          createdAt: DateTime.parse(_currentDateTime),
+          updatedAt: DateTime.parse(_currentDateTime),
+          category: 'Development',
+          meetingLink: 'https://meet.google.com/featured-workshop',
+          prerequisites: 'Basic Flutter knowledge',
+          materialsUrl: 'https://workshop-materials.com/flutter-advanced',
+          minParticipants: 5,
+          status: 'scheduled',
+        );
+    context.push('/details/${workshopToUse.workshopId}', extra: workshopToUse);
   }
 
   void _navigateToRegisterScreen(BuildContext context, {Workshop? workshop}) {
-    final workshopToUse = workshop ?? Workshop(
-      workshopId: 'featured-1',
-      title: 'Advanced Flutter Development',
-      description: 'Master state management, animations, and advanced UI patterns',
-      workshopDate: DateTime.now().add(const Duration(days: 1)),
-      endTime: DateTime.now().add(const Duration(days: 1, hours: 3)),
-      location: 'Virtual Classroom',
-      locationType: 'virtual',
-      capacity: 30,
-      currentRegistrations: 22,
-      createdBy: _currentUser,
-      createdAt: DateTime.parse(_currentDateTime),
-      updatedAt: DateTime.parse(_currentDateTime),
-      category: 'Development',
-      meetingLink: 'https://meet.google.com/featured-workshop',
-      prerequisites: 'Basic Flutter knowledge',
-      materialsUrl: 'https://workshop-materials.com/flutter-advanced',
-      minParticipants: 5,
-      status: 'scheduled',
-    );
+    final workshopToUse =
+        workshop ??
+        Workshop(
+          workshopId: 'featured-1',
+          title: 'Advanced Flutter Development',
+          description:
+              'Master state management, animations, and advanced UI patterns',
+          workshopDate: DateTime.now().add(const Duration(days: 1)),
+          endTime: DateTime.now().add(const Duration(days: 1, hours: 3)),
+          location: 'Virtual Classroom',
+          locationType: 'virtual',
+          capacity: 30,
+          currentRegistrations: 22,
+          createdBy: _currentUser,
+          createdAt: DateTime.parse(_currentDateTime),
+          updatedAt: DateTime.parse(_currentDateTime),
+          category: 'Development',
+          meetingLink: 'https://meet.google.com/featured-workshop',
+          prerequisites: 'Basic Flutter knowledge',
+          materialsUrl: 'https://workshop-materials.com/flutter-advanced',
+          minParticipants: 5,
+          status: 'scheduled',
+        );
     context.go('/register', extra: workshopToUse);
   }
 
   void _createNewWorkshop(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        title: const Text('Coming Soon'),
-        content: const Text('Workshop creation will be available soon!'),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text('OK'),
+      builder:
+          (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: const Text('Coming Soon'),
+            content: const Text('Workshop creation will be available soon!'),
+            actions: [
+              TextButton(
+                onPressed: () => context.pop(),
+                child: const Text('OK'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 

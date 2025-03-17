@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:frontend/themes/theme_toggle_button.dart';
 import 'package:frontend/user/auth/components/auth_responsive.dart';
 import 'package:frontend/user/auth/components/text_field_login.dart';
+import 'package:go_router/go_router.dart';
 
 class PhoneVerificationScreen extends StatefulWidget {
   const PhoneVerificationScreen({super.key});
@@ -32,18 +33,8 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
       setState(() => _isLoading = true);
 
       try {
-        // TODO: Implement verification logic
-        final code = _verificationController.text;
-        print('Verifying code: $code');
-
-        // Simulate API call
         await Future.delayed(const Duration(seconds: 2));
-
-        // On success, navigate to next screen
-        if (mounted) {
-          // Navigate to next screen
-          // Navigator.pushReplacement(...)
-        }
+        context.go('/form');
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -138,7 +129,6 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
               onPressed:
                   _canResend
                       ? () {
-                        // TODO: Implement resend logic
                         setState(() {
                           _canResend = false;
                           _timeLeft = 60;

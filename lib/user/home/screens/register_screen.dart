@@ -5,16 +5,15 @@ import 'package:intl/intl.dart';
 class WorkshopRegistrationScreen extends StatefulWidget {
   final Workshop workshop;
 
-  const WorkshopRegistrationScreen({
-    super.key,
-    required this.workshop,
-  });
+  const WorkshopRegistrationScreen({super.key, required this.workshop});
 
   @override
-  State<WorkshopRegistrationScreen> createState() => _WorkshopRegistrationScreenState();
+  State<WorkshopRegistrationScreen> createState() =>
+      _WorkshopRegistrationScreenState();
 }
 
-class _WorkshopRegistrationScreenState extends State<WorkshopRegistrationScreen> {
+class _WorkshopRegistrationScreenState
+    extends State<WorkshopRegistrationScreen> {
   final _formKey = GlobalKey<FormState>();
   final _experienceLevelController = TextEditingController();
   final _expectationsController = TextEditingController();
@@ -35,37 +34,35 @@ class _WorkshopRegistrationScreenState extends State<WorkshopRegistrationScreen>
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Workshop Registration'),
-        elevation: 0,
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  _buildHeader(theme),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildPersonalInfo(theme),
-                          const SizedBox(height: 24),
-                          _buildAdditionalInfo(theme),
-                          const SizedBox(height: 24),
-                          _buildRequirements(theme),
-                          const SizedBox(height: 24),
-                          _buildTerms(theme),
-                        ],
+      appBar: AppBar(title: const Text('Workshop Registration'), elevation: 0),
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _buildHeader(theme),
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildPersonalInfo(theme),
+                            const SizedBox(height: 24),
+                            _buildAdditionalInfo(theme),
+                            const SizedBox(height: 24),
+                            _buildRequirements(theme),
+                            const SizedBox(height: 24),
+                            _buildTerms(theme),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
       bottomNavigationBar: _buildBottomBar(theme),
     );
   }
@@ -89,14 +86,12 @@ class _WorkshopRegistrationScreenState extends State<WorkshopRegistrationScreen>
           const SizedBox(height: 8),
           Row(
             children: [
-              Icon(
-                Icons.event,
-                size: 16,
-                color: theme.colorScheme.primary,
-              ),
+              Icon(Icons.event, size: 16, color: theme.colorScheme.primary),
               const SizedBox(width: 4),
               Text(
-                DateFormat('EEEE, MMMM d, y').format(widget.workshop.workshopDate),
+                DateFormat(
+                  'EEEE, MMMM d, y',
+                ).format(widget.workshop.workshopDate),
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.primary,
                 ),
@@ -141,9 +136,7 @@ class _WorkshopRegistrationScreenState extends State<WorkshopRegistrationScreen>
           enabled: false,
           decoration: InputDecoration(
             labelText: 'Name',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
         const SizedBox(height: 16),
@@ -152,9 +145,7 @@ class _WorkshopRegistrationScreenState extends State<WorkshopRegistrationScreen>
           enabled: false,
           decoration: InputDecoration(
             labelText: 'Email',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
       ],
@@ -177,9 +168,7 @@ class _WorkshopRegistrationScreenState extends State<WorkshopRegistrationScreen>
           decoration: InputDecoration(
             labelText: 'Experience Level',
             hintText: 'Describe your experience with the workshop topic',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
           maxLines: 2,
           validator: (value) {
@@ -195,9 +184,7 @@ class _WorkshopRegistrationScreenState extends State<WorkshopRegistrationScreen>
           decoration: InputDecoration(
             labelText: 'What do you hope to learn?',
             hintText: 'Share your learning goals for this workshop',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
           maxLines: 3,
           validator: (value) {
@@ -226,10 +213,9 @@ class _WorkshopRegistrationScreenState extends State<WorkshopRegistrationScreen>
           controller: _requirementsController,
           decoration: InputDecoration(
             labelText: 'Any special requirements or accommodations?',
-            hintText: 'Optional: Let us know if you need any specific arrangements',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            hintText:
+                'Optional: Let us know if you need any specific arrangements',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
           maxLines: 2,
         ),
@@ -341,39 +327,40 @@ class _WorkshopRegistrationScreenState extends State<WorkshopRegistrationScreen>
 
       if (!mounted) return;
 
-      // Show success dialog
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Registration Successful'),
-          content: const Text(
-            'You have successfully registered for the workshop. Check your email for confirmation details.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close dialog
-                Navigator.of(context).pop(); // Return to previous screen
-              },
-              child: const Text('OK'),
+        builder:
+            (context) => AlertDialog(
+              title: const Text('Registration Successful'),
+              content: const Text(
+                'You have successfully registered for the workshop. Check your email for confirmation details.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close dialog
+                    Navigator.of(context).pop(); // Return to previous screen
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
             ),
-          ],
-        ),
       );
     } catch (e) {
       // Show error dialog
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Registration Failed'),
-          content: Text('An error occurred: ${e.toString()}'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
+        builder:
+            (context) => AlertDialog(
+              title: const Text('Registration Failed'),
+              content: Text('An error occurred: ${e.toString()}'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
             ),
-          ],
-        ),
       );
     } finally {
       setState(() {

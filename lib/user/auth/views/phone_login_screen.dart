@@ -5,6 +5,7 @@ import 'package:frontend/user/auth/components/text_field_login.dart';
 import 'package:frontend/user/country/country_code_picker.dart';
 import 'package:frontend/user/country/country_data.dart';
 import 'package:frontend/user/country/country_model.dart';
+import 'package:go_router/go_router.dart';
 
 class PhoneLoginScreen extends StatefulWidget {
   const PhoneLoginScreen({super.key});
@@ -94,7 +95,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState?.validate() ?? false) {
-                    // Handle phone login
+                    context.go('/phone/verify');
                   }
                 },
                 style: ElevatedButton.styleFrom(

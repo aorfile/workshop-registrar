@@ -5,8 +5,8 @@ class RecentActivity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.parse('2025-03-17 14:25:06');
-    
+    final now = DateTime.now();
+
     return ListView(
       shrinkWrap: true,
       children: [
@@ -80,11 +80,7 @@ class _ActivityItem extends StatelessWidget {
             color: color.withOpacity(0.1),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(
-            icon,
-            color: color,
-            size: 20,
-          ),
+          child: Icon(icon, color: color, size: 20),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -96,9 +92,7 @@ class _ActivityItem extends StatelessWidget {
                   Expanded(
                     child: Text(
                       title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                   Text(
@@ -110,9 +104,9 @@ class _ActivityItem extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 description,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey.shade600,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
               ),
             ],
           ),
@@ -122,7 +116,7 @@ class _ActivityItem extends StatelessWidget {
   }
 
   String _formatTimeAgo(DateTime timestamp) {
-    final now = DateTime.parse('2025-03-17 14:25:06');
+    final now = DateTime.now();
     final difference = now.difference(timestamp);
 
     if (difference.inMinutes < 60) {

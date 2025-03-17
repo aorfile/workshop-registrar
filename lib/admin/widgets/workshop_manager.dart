@@ -7,6 +7,7 @@ import 'package:frontend/admin/screens/workshop_list.dart';
 import 'package:frontend/admin/widgets/reponsive_container.dart';
 import 'package:frontend/admin/widgets/reponsive_nav.dart';
 import 'package:frontend/utils/responsive_helper.dart';
+import 'package:go_router/go_router.dart';
 
 class WorkshopManager extends StatefulWidget {
   const WorkshopManager({super.key});
@@ -76,10 +77,7 @@ class _WorkshopManagerState extends State<WorkshopManager> {
             switchInCurve: Curves.easeInOut,
             switchOutCurve: Curves.easeInOut,
             transitionBuilder: (child, animation) {
-              return FadeTransition(
-                opacity: animation,
-                child: child,
-              );
+              return FadeTransition(opacity: animation, child: child);
             },
             child: KeyedSubtree(
               key: ValueKey<int>(_selectedIndex),
@@ -95,7 +93,10 @@ class _WorkshopManagerState extends State<WorkshopManager> {
     switch (_selectedIndex) {
       case 1: // Workshops
         return FloatingActionButton.extended(
-          onPressed: () => _showAddWorkshopDialog(),
+          onPressed: () async {
+            await Future.delayed(const Duration(seconds: 2));
+            context.go('/admin/create');
+          },
           label: const Text('New Workshop'),
           icon: const Icon(Icons.add),
         );
@@ -112,94 +113,75 @@ class _WorkshopManagerState extends State<WorkshopManager> {
   void _showAddWorkshopDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add New Workshop'),
-        content: const SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Workshop Title',
-                  hintText: 'Enter workshop title',
-                ),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Add New Workshop'),
+            content: const SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Workshop Title',
+                      hintText: 'Enter workshop title',
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Description',
+                      hintText: 'Enter workshop description',
+                    ),
+                    maxLines: 3,
+                  ),
+                  // Add more fields as needed
+                ],
               ),
-              SizedBox(height: 16),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Description',
-                  hintText: 'Enter workshop description',
-                ),
-                maxLines: 3,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
               ),
-              // Add more fields as needed
+              FilledButton(
+                onPressed: () {
+                  // Handle workshop creation
+                  Navigator.pop(context);
+                },
+                child: const Text('Create'),
+              ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () {
-              // Handle workshop creation
-              Navigator.pop(context);
-            },
-            child: const Text('Create'),
-          ),
-        ],
-      ),
     );
   }
 
   void _showExportDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Export Registrations'),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Choose export format:'),
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Export Registrations'),
+            content: const Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
+                Text('Choose export format:'),
+                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Icon(Icons.table_chart),
-                    Text('Excel'),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Icon(Icons.picture_as_pdf),
-                    Text('PDF'),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Icon(Icons.code),
-                    Text('CSV'),
+                    Column(children: [Icon(Icons.table_chart), Text('Excel')]),
+                    Column(children: [Icon(Icons.picture_as_pdf), Text('PDF')]),
+                    Column(children: [Icon(Icons.code), Text('CSV')]),
                   ],
                 ),
               ],
             ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {  },
-            child: Text('Cancel'),
+            actions: [
+              TextButton(onPressed: () {}, child: Text('Cancel')),
+              FilledButton(onPressed: () {}, child: Text('Export')),
+            ],
           ),
-          FilledButton(
-            onPressed: () {  },
-            child: Text('Export'),
-          ),
-        ],
-      ),
     );
   }
 }

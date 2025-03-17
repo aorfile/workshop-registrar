@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:frontend/models/workshop_model.dart';
-import 'package:frontend/user/home/widgets/home_widget/info_chip.dart';
+
 import 'package:frontend/constants/assets.dart';
 import 'package:intl/intl.dart';
 
@@ -24,9 +24,7 @@ class WorkshopCard extends StatelessWidget {
     return Card(
       elevation: 8,
       shadowColor: theme.colorScheme.primary.withOpacity(0.2),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
@@ -65,54 +63,43 @@ class WorkshopCard extends StatelessWidget {
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             child: CachedNetworkImage(
-              imageUrl: workshop.imageUrl ?? AppAssets.getCategoryImage(workshop.category),
+              imageUrl:
+                  workshop.imageUrl ??
+                  AppAssets.getCategoryImage(workshop.category),
               fit: BoxFit.cover,
               width: double.infinity,
               height: double.infinity,
-              placeholder: (context, url) => Container(
-                color: Theme.of(context).colorScheme.surfaceVariant,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-              errorWidget: (context, url, error) => Container(
-                color: Theme.of(context).colorScheme.surfaceVariant,
-                child: Icon(
-                  Icons.image_not_supported_rounded,
-                  size: 32,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
+              placeholder:
+                  (context, url) => Container(
+                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
+              errorWidget:
+                  (context, url, error) => Container(
+                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    child: Icon(
+                      Icons.image_not_supported_rounded,
+                      size: 32,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
             ),
           ),
           Container(
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  Colors.black.withOpacity(0.7),
-                ],
+                colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
               ),
             ),
           ),
-          Positioned(
-            bottom: 16,
-            left: 16,
-            child: _buildCategoryChip(context),
-          ),
-          Positioned(
-            top: 16,
-            left: 16,
-            child: _buildStatusChip(context),
-          ),
-          Positioned(
-            top: 16,
-            right: 16,
-            child: _buildTypeIcon(context),
-          ),
+          Positioned(bottom: 16, left: 16, child: _buildCategoryChip(context)),
+          Positioned(top: 16, left: 16, child: _buildStatusChip(context)),
+          Positioned(top: 16, right: 16, child: _buildTypeIcon(context)),
         ],
       ),
     );
@@ -167,11 +154,7 @@ class WorkshopCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            categoryIcon,
-            size: 16,
-            color: theme.colorScheme.primary,
-          ),
+          Icon(categoryIcon, size: 16, color: theme.colorScheme.primary),
           const SizedBox(width: 6),
           Text(
             workshop.category,
@@ -234,11 +217,7 @@ class WorkshopCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            statusIcon,
-            size: 16,
-            color: Colors.white,
-          ),
+          Icon(statusIcon, size: 16, color: Colors.white),
           const SizedBox(width: 6),
           Text(
             statusText,
@@ -303,9 +282,7 @@ class WorkshopCard extends StatelessWidget {
   Widget _buildTitle(ThemeData theme) {
     return Text(
       workshop.title,
-      style: theme.textTheme.titleLarge?.copyWith(
-        fontWeight: FontWeight.bold,
-      ),
+      style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
     );
@@ -419,7 +396,8 @@ class WorkshopCard extends StatelessWidget {
   Widget _buildFooter(ThemeData theme) {
     final isAvailable = workshop.spotsLeft > 0 && workshop.isScheduled;
     final isFilling = workshop.currentRegistrations > (workshop.capacity * 0.7);
-    final isAlmostFull = workshop.currentRegistrations > (workshop.capacity * 0.9);
+    final isAlmostFull =
+        workshop.currentRegistrations > (workshop.capacity * 0.9);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -434,17 +412,18 @@ class WorkshopCard extends StatelessWidget {
                       ? isAlmostFull
                           ? Icons.flash_on_rounded
                           : isFilling
-                              ? Icons.directions_run_rounded
-                              : Icons.how_to_reg_rounded
+                          ? Icons.directions_run_rounded
+                          : Icons.how_to_reg_rounded
                       : Icons.no_accounts_rounded,
                   size: 18,
-                  color: isAvailable
-                      ? isAlmostFull
-                          ? theme.colorScheme.error
-                          : isFilling
+                  color:
+                      isAvailable
+                          ? isAlmostFull
+                              ? theme.colorScheme.error
+                              : isFilling
                               ? theme.colorScheme.error.withOpacity(0.7)
                               : theme.colorScheme.primary
-                      : theme.colorScheme.error,
+                          : theme.colorScheme.error,
                 ),
                 const SizedBox(width: 6),
                 Text(
@@ -452,13 +431,14 @@ class WorkshopCard extends StatelessWidget {
                       ? 'Almost full!'
                       : '${workshop.spotsLeft} spots left',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: isAvailable
-                        ? isAlmostFull
-                            ? theme.colorScheme.error
-                            : isFilling
+                    color:
+                        isAvailable
+                            ? isAlmostFull
+                                ? theme.colorScheme.error
+                                : isFilling
                                 ? theme.colorScheme.error.withOpacity(0.7)
                                 : theme.colorScheme.primary
-                        : theme.colorScheme.error,
+                            : theme.colorScheme.error,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -483,7 +463,7 @@ class WorkshopCard extends StatelessWidget {
             ),
           ],
         ),
-                FilledButton.icon(
+        FilledButton.icon(
           onPressed: isAvailable ? onRegister : null,
           icon: Icon(
             isAvailable
@@ -501,18 +481,17 @@ class WorkshopCard extends StatelessWidget {
                 : 'Full',
           ),
           style: FilledButton.styleFrom(
-            backgroundColor: isAvailable
-                ? isAlmostFull
-                    ? theme.colorScheme.error
-                    : null
-                : null,
+            backgroundColor:
+                isAvailable
+                    ? isAlmostFull
+                        ? theme.colorScheme.error
+                        : null
+                    : null,
+
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           ),
         ),
       ],

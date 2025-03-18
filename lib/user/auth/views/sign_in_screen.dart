@@ -77,22 +77,22 @@ class _SignInPageState extends State<SignInPage> {
                         child: ListTile(
                           leading: Icon(
                             Icons.admin_panel_settings,
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                           title: Text(
                             'Switch to Admin Login',
                             style: TextStyle(
-                              color: Theme.of(context).primaryColor,
+                              color: Theme.of(context).colorScheme.primary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           trailing: IconButton(
                             icon: Icon(
                               Icons.arrow_forward,
-                              color: Theme.of(context).primaryColor,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
-                            onPressed: () async {
-                              await Future.delayed(const Duration(seconds: 2));
+                            onPressed: () {
+                              
                               context.go('/admin/login');
                             },
                           ),
@@ -296,10 +296,8 @@ class _SignInPageState extends State<SignInPage> {
                               children: [
                                 const Text("Don't have an account?"),
                                 TextButton(
-                                  onPressed: () async {
-                                    await Future.delayed(
-                                      const Duration(seconds: 2),
-                                    );
+                                  onPressed: ()  {
+                                    
                                     context.go('/signup');
                                   },
                                   child: const Text('Sign Up'),

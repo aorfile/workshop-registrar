@@ -7,6 +7,7 @@ import 'package:frontend/user/auth/views/form.dart';
 import 'package:frontend/user/auth/views/phone_login_screen.dart';
 import 'package:frontend/user/auth/views/phone_verification_screen.dart';
 import 'package:frontend/user/auth/views/sign_in_screen.dart';
+import 'package:frontend/user/auth/views/sign_up_screen.dart';
 import 'package:frontend/user/home/home.dart';
 import 'package:frontend/user/home/screens/main_screen.dart';
 import 'package:frontend/user/home/screens/profile_screen.dart';
@@ -38,7 +39,7 @@ final GoRouter router = GoRouter(
     GoRoute(path: '/admin/login', builder: (context, state) => AdminAuthPage()),
     GoRoute(path: '/profile', builder: (context, state) => ProfileScreen()),
     GoRoute(path: '/login', builder: (context, state) => SignInPage()),
-    GoRoute(path: '/signup', builder: (context, state) => SignInPage()),
+    GoRoute(path: '/signup', builder: (context, state) => SignUpPage()),
     GoRoute(
       path: '/details',
       builder: (context, state) {

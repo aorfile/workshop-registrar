@@ -335,7 +335,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             const Text('Already have an account?'),
                             TextButton(
                               onPressed: () {
-                                // Navigate to sign in
+                               context.go('/login');
                                 Navigator.pop(context);
                               },
                               child: const Text('Sign In'),
